@@ -92,6 +92,12 @@ def build_merged_df() -> pd.DataFrame:
     df = energy.join(as_pr,   how="outer", rsuffix="_as")
     df = df.join(syscond,     how="outer", rsuffix="_sys")
     df = df.sort_index()
+    # Drop columns we don't use (rt_mcpc_* are all null pre-RTC+B,
+    # is_post_rtcb flags are not needed for training)
+    cols_to_drop = [c for c in df.columns if
+                    c.startswith("rt_mcpc_") or
+                    c.startswith("is_post_rtcb")]
+    df = df.drop(columns=cols_to_drop, errors="ignore")
     # print("[p2] Merging on timestamp index ...")
     # df = energy.join(as_pr,   how="outer", rsuffix="_as")
     # df = df.join(syscond,     how="outer", rsuffix="_sys")

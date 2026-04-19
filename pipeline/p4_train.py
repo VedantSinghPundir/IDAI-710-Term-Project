@@ -213,10 +213,10 @@ class ERCOTEnv:
     #     self.soc = 0.5
     #     return self._obs()
     def reset(self):
-    max_start = int(len(self.ds) * 0.8)
-    self.idx  = np.random.randint(WINDOW_LEN, max_start)
-    self.soc  = np.random.uniform(0.3, 0.7)
-    return self._obs()
+        max_start = int(len(self.ds) * 0.8)
+        self.idx  = np.random.randint(WINDOW_LEN, max_start)
+        self.soc  = np.random.uniform(0.3, 0.7)
+        return self._obs()
 
     def _obs(self):
         pw  = self.ds.get_price_window(self.idx)
@@ -468,6 +468,7 @@ def main():
     # Agent + buffer
     agent  = SACAgent()
     buffer = ReplayBuffer()
+    reward_normaliser = RunningNormaliser(clip=10.0)
 
     # Log file
     log_path = os.path.join(LOG_DIR, "training_log.csv")
@@ -508,7 +509,9 @@ def main():
         # ── Store transition ───────────────────────────────────────
         obs_flat  = flatten_obs(pw,  sv,  tf,  soc_arr)
         nobs_flat = flatten_obs(npw, nsv, ntf, nsoc_arr)
-        buffer.push(obs_flat, action, reward, nobs_flat, float(done))
+        # buffer.push(obs_flat, action, reward, nobs_flat, float(done))
+        reward_norm = reward_normaliser.update_and_normalise(reward)
+        buffer.push(obs_flat, action, reward_norm, nobs_flat, float(done))
 
         ep_reward += reward
         ep_step   += 1

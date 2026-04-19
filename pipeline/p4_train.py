@@ -32,6 +32,29 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from pipeline.config import *
 from pipeline.p3_models import TTFE, Actor, Critic, FeasibilityProjection
 
+# ════════════════════════════════════════════════════════
+# RUNNING REWARD NORMALISER
+# ════════════════════════════════════════════════════════
+
+class RunningNormaliser:
+    """
+    Tracks running mean and std of rewards using Welford's algorithm.
+    Normalises rewards to roughly [-clip, +clip] range regardless of
+    price spike magnitude. Far better than dividing by a fixed constant.
+    """
+    def __init__(self, clip: float = 10.0):
+        self.mean  = 0.0
+        self.var   = 1.0
+        self.count = 0
+        self.clip  = clip
+
+    def update_and_normalise(self, reward: float) -> float:
+        self.count += 1
+        delta      = reward - self.mean
+        self.mean += delta / self.count
+        self.var  += (delta * (reward - self.mean) - self.var) / self.count
+        std        = max(math.sqrt(abs(self.var)), 1e-6)
+        return float(np.clip(reward / std, -self.clip, self.clip))
 
 # ════════════════════════════════════════════════════════
 # DATASET LOADER
@@ -185,10 +208,15 @@ class ERCOTEnv:
         self.idx = WINDOW_LEN
         self.soc = 0.5
 
+    # def reset(self):
+    #     self.idx = WINDOW_LEN
+    #     self.soc = 0.5
+    #     return self._obs()
     def reset(self):
-        self.idx = WINDOW_LEN
-        self.soc = 0.5
-        return self._obs()
+    max_start = int(len(self.ds) * 0.8)
+    self.idx  = np.random.randint(WINDOW_LEN, max_start)
+    self.soc  = np.random.uniform(0.3, 0.7)
+    return self._obs()
 
     def _obs(self):
         pw  = self.ds.get_price_window(self.idx)
@@ -202,7 +230,8 @@ class ERCOTEnv:
         power_mw   = -action * BATTERY_POWER_MW    # +ve when discharging (selling)
         energy_mwh = power_mw * INTERVAL_H
         # reward     = energy_mwh * rt_lmp            # $/interval
-        reward = (energy_mwh * rt_lmp) / 1000.0
+        # reward = (energy_mwh * rt_lmp) / 1000.0
+        reward = energy_mwh * rt_lmp
 
         self.soc = new_soc
         self.idx += 1

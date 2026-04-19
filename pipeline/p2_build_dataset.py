@@ -31,6 +31,27 @@ from pipeline.config import *
 # LOAD & MERGE
 # ════════════════════════════════════════════════════════
 
+# def load_folder(subfolder: str) -> pd.DataFrame:
+#     """Load all monthly parquets in a subfolder into one DataFrame."""
+#     pattern = os.path.join(DATA_ROOT, subfolder, "*.parquet")
+#     files   = sorted(glob.glob(pattern))
+#     if not files:
+#         raise FileNotFoundError(
+#             f"No parquet files found at {pattern}\n"
+#             "Run p0_download_data.py first."
+#         )
+#     parts = [pd.read_parquet(f) for f in files]
+#     df    = pd.concat(parts, ignore_index=True)
+
+#     # Ensure datetime index
+#     if TIMESTAMP_COL == "__index__":
+#         if not pd.api.types.is_datetime64_any_dtype(df.index):
+#             df.index = pd.to_datetime(df.index)
+#     else:
+#         df[TIMESTAMP_COL] = pd.to_datetime(df[TIMESTAMP_COL])
+#         df = df.set_index(TIMESTAMP_COL)
+
+#     return df.sort_index()
 def load_folder(subfolder: str) -> pd.DataFrame:
     """Load all monthly parquets in a subfolder into one DataFrame."""
     pattern = os.path.join(DATA_ROOT, subfolder, "*.parquet")
@@ -41,15 +62,11 @@ def load_folder(subfolder: str) -> pd.DataFrame:
             "Run p0_download_data.py first."
         )
     parts = [pd.read_parquet(f) for f in files]
-    df    = pd.concat(parts, ignore_index=True)
+    df    = pd.concat(parts)          # ← remove ignore_index=True
 
-    # Ensure datetime index
-    if TIMESTAMP_COL == "__index__":
-        if not pd.api.types.is_datetime64_any_dtype(df.index):
-            df.index = pd.to_datetime(df.index)
-    else:
-        df[TIMESTAMP_COL] = pd.to_datetime(df[TIMESTAMP_COL])
-        df = df.set_index(TIMESTAMP_COL)
+    # Strip timezone so joins work across all three folders
+    if df.index.tz is not None:
+        df.index = df.index.tz_localize(None)
 
     return df.sort_index()
 
@@ -69,9 +86,9 @@ def build_merged_df() -> pd.DataFrame:
     
     print("[p2] Merging on timestamp index ...")
     # Strip timezone from all three before joining
-    energy  = energy.tz_localize(None)  if energy.index.tz  else energy
-    as_pr   = as_pr.tz_localize(None)   if as_pr.index.tz   else as_pr 
-    syscond = syscond.tz_localize(None) if syscond.index.tz  else syscond
+    # energy  = energy.tz_localize(None)  if energy.index.tz  else energy
+    # as_pr   = as_pr.tz_localize(None)   if as_pr.index.tz   else as_pr 
+    # syscond = syscond.tz_localize(None) if syscond.index.tz  else syscond
     df = energy.join(as_pr,   how="outer", rsuffix="_as")
     df = df.join(syscond,     how="outer", rsuffix="_sys")
     df = df.sort_index()

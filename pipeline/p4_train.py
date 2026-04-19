@@ -63,22 +63,34 @@ class ERCOTDataset:
         print(f"[Dataset:{split}] {self.n:,} rows | "
               f"{self.df.index.min().date()} → {self.df.index.max().date()}")
 
+    # def _load(self) -> pd.DataFrame:
+    #     pattern = os.path.join(DATA_ROOT, "energy_prices", "*.parquet")
+    #     files   = sorted(glob.glob(pattern))
+    #     if not files:
+    #         raise FileNotFoundError("Run p0_download_data.py and p2_build_dataset.py first.")
+
+    #     # Load all three folders
+    #     def load_folder(subfolder):
+    #         fs = sorted(glob.glob(os.path.join(DATA_ROOT, subfolder, "*.parquet")))
+    #         parts = [pd.read_parquet(f) for f in fs]
+    #         df = pd.concat(parts, ignore_index=True)
+    #         if TIMESTAMP_COL != "__index__":
+    #             df[TIMESTAMP_COL] = pd.to_datetime(df[TIMESTAMP_COL])
+    #             df = df.set_index(TIMESTAMP_COL)
+    #         else:
+    #             df.index = pd.to_datetime(df.index)
+    #         return df.sort_index()
     def _load(self) -> pd.DataFrame:
         pattern = os.path.join(DATA_ROOT, "energy_prices", "*.parquet")
         files   = sorted(glob.glob(pattern))
         if not files:
             raise FileNotFoundError("Run p0_download_data.py and p2_build_dataset.py first.")
-
-        # Load all three folders
         def load_folder(subfolder):
             fs = sorted(glob.glob(os.path.join(DATA_ROOT, subfolder, "*.parquet")))
             parts = [pd.read_parquet(f) for f in fs]
-            df = pd.concat(parts, ignore_index=True)
-            if TIMESTAMP_COL != "__index__":
-                df[TIMESTAMP_COL] = pd.to_datetime(df[TIMESTAMP_COL])
-                df = df.set_index(TIMESTAMP_COL)
-            else:
-                df.index = pd.to_datetime(df.index)
+            df = pd.concat(parts)
+            if df.index.tz is not None:
+                df.index = df.index.tz_localize(None)
             return df.sort_index()
 
         energy  = load_folder("energy_prices")
@@ -88,12 +100,18 @@ class ERCOTDataset:
         df = energy.join(as_pr,   how="outer", rsuffix="_as")
         df = df.join(syscond,     how="outer", rsuffix="_sys")
         df = df.sort_index().ffill(limit=3).dropna()
+        # Drop unused columns before dropna
+        cols_to_drop = [c for c in df.columns if
+                        c.startswith("rt_mcpc_") or
+                        c.startswith("is_post_rtcb")]
+        df = df.drop(columns=cols_to_drop, errors="ignore")
 
+        df = df.ffill(limit=3).dropna()
         # Date split
         if self.split == "train":
-            df = df[(df.index >= STAGE1_START) & (df.index < VAL_START)]
+            df = df[(df.index >= pd.Timestamp(STAGE1_START)) & (df.index < pd.Timestamp(VAL_START))]
         else:
-            df = df[(df.index >= VAL_START) & (df.index <= STAGE1_END)]
+            df = df[(df.index >= pd.Timestamp(VAL_START)) & (df.index <= pd.Timestamp(STAGE1_END))]
 
         return df
 

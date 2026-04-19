@@ -99,7 +99,7 @@ class ERCOTDataset:
 
         df = energy.join(as_pr,   how="outer", rsuffix="_as")
         df = df.join(syscond,     how="outer", rsuffix="_sys")
-        df = df.sort_index().ffill(limit=3).dropna()
+        
         # Drop unused columns before dropna
         cols_to_drop = [c for c in df.columns if
                         c.startswith("rt_mcpc_") or

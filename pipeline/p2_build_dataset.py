@@ -66,17 +66,27 @@ def build_merged_df() -> pd.DataFrame:
     print("[p2] Loading system_conditions ...")
     syscond = load_folder("system_conditions")
     print(f"     {len(syscond):,} rows | cols: {syscond.columns.tolist()}")
-
+    
     print("[p2] Merging on timestamp index ...")
+    # Strip timezone from all three before joining
+    energy  = energy.tz_localize(None)  if energy.index.tz  else energy
+    as_pr   = as_pr.tz_localize(None)   if as_pr.index.tz   else as_pr 
+    syscond = syscond.tz_localize(None) if syscond.index.tz  else syscond
     df = energy.join(as_pr,   how="outer", rsuffix="_as")
     df = df.join(syscond,     how="outer", rsuffix="_sys")
     df = df.sort_index()
+    # print("[p2] Merging on timestamp index ...")
+    # df = energy.join(as_pr,   how="outer", rsuffix="_as")
+    # df = df.join(syscond,     how="outer", rsuffix="_sys")
+    # df = df.sort_index()
 
     # Forward-fill small gaps (up to 3 intervals = 15 min)
     df = df.ffill(limit=3).dropna()
 
     # Clip to Stage 1 date range
-    df = df[(df.index >= STAGE1_START) & (df.index <= STAGE1_END)]
+    # df = df[(df.index >= STAGE1_START) & (df.index <= STAGE1_END)]
+    df = df[(df.index >= pd.Timestamp(STAGE1_START)) & 
+        (df.index <= pd.Timestamp(STAGE1_END))]
 
     print(f"     Merged: {len(df):,} rows | {df.shape[1]} columns")
     print(f"     Date range: {df.index.min()} → {df.index.max()}")

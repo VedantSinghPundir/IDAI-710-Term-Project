@@ -77,13 +77,24 @@ def main():
         else:
             ts = pd.to_datetime(df[ts_col])
             print(f"Timestamp col: '{ts_col}'")
-
-        print(f"Date range : {ts.min()} → {ts.max()}")
-        diffs = ts.sort_values().diff().dropna()
-        most_common_freq = diffs.mode()[0]
-        print(f"Most common interval: {most_common_freq}  (expected: 0 days 00:05:00)")
-        if most_common_freq != pd.Timedelta("5min"):
-            print("  ⚠ WARNING: interval is NOT 5 minutes — check this!")
+          print(f"Date range : {ts.min()} → {ts.max()}")
+          # Make sure timestamp differences are handled as a Series, not TimedeltaIndex
+          ts_sorted = pd.Series(ts).sort_values()
+          diffs = ts_sorted.diff().dropna()
+          if len(diffs) > 0:
+            most_common_freq = diffs.mode().iloc[0]
+            print(f"Most common interval: {most_common_freq}  (expected: 0 days 00:05:00)")
+            if most_common_freq != pd.Timedelta("5min"):
+              print("  ⚠ WARNING: interval is NOT 5 minutes — check this!")
+          else:
+            print("Most common interval: could not determine (not enough timestamps)")
+        # print(f"Date range : {ts.min()} → {ts.max()}")
+        # diffs = ts.sort_values().diff().dropna()
+        # most_common_freq = diffs.mode()[0]
+        # print(f"Most common interval: {most_common_freq}  (expected: 0 days 00:05:00)")
+        # if most_common_freq != pd.Timedelta("5min"):
+        #     print("  ⚠ WARNING: interval is NOT 5 minutes — check this!")
+      
 
         # Column info
         numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()

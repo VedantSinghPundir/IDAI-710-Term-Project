@@ -201,7 +201,8 @@ class ERCOTEnv:
         rt_lmp     = self.ds.get_rt_lmp(self.idx)
         power_mw   = -action * BATTERY_POWER_MW    # +ve when discharging (selling)
         energy_mwh = power_mw * INTERVAL_H
-        reward     = energy_mwh * rt_lmp            # $/interval
+        # reward     = energy_mwh * rt_lmp            # $/interval
+        reward = (energy_mwh * rt_lmp) / 1000.0
 
         self.soc = new_soc
         self.idx += 1
@@ -326,8 +327,12 @@ class SACAgent:
         q1, q2      = self.critic(obs_enc, act)
         critic_loss = F.mse_loss(q1, y) + F.mse_loss(q2, y)
 
+        # self.opt_critic.zero_grad()
+        # critic_loss.backward()
+        # self.opt_critic.step()
         self.opt_critic.zero_grad()
         critic_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.critic.parameters(), max_norm=1.0)
         self.opt_critic.step()
 
         # ── Actor + TTFE update ──────────────────────────────────────
@@ -337,8 +342,14 @@ class SACAgent:
         q_new = self.critic.q_min(obs_enc2, new_act)
         actor_loss = (self.alpha.detach() * log_pi - q_new).mean()
 
+        # self.opt_actor.zero_grad()
+        # actor_loss.backward()
+        # self.opt_actor.step()
         self.opt_actor.zero_grad()
         actor_loss.backward()
+        torch.nn.utils.clip_grad_norm_(list(self.ttfe.parameters()) + list(self.actor.parameters()),
+                                       max_norm=1.0
+                                       )
         self.opt_actor.step()
 
         # ── Alpha update ─────────────────────────────────────────────

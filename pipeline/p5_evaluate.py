@@ -247,7 +247,8 @@ def main():
     print("=" * 60)
 
     val_ds  = ERCOTDataset("val")
-    MAX_STEPS = 5000
+    # MAX_STEPS = 5000
+    MAX_STEPS = 18000   # full val period
 
     print("\n[1] Running rule-based heuristic...")
     rule = run_rule_based(val_ds)

@@ -94,7 +94,8 @@ INTERVAL_H       = 5 / 60      # 5-minute intervals in hours
 # ══════════════════════════════════════════════════════════
 # MODEL ARCHITECTURE
 # ══════════════════════════════════════════════════════════
-WINDOW_LEN   = 32              # timesteps in TTFE input
+# WINDOW_LEN   = 32              # timesteps in TTFE input
+WINDOW_LEN  = 288 
 # PRICE_DIM    = len(PRICE_COLS) # = 12
 PRICE_DIM = len(PRICE_COLS)
 SYSTEM_DIM   = len(SYSTEM_COLS)# = 7
@@ -122,7 +123,8 @@ TAU             = 0.005
 TARGET_ENTROPY  = -0.5         # for 1-dim action (energy only)
 # TARGET_ENTROPY = -0.1 #Fix: lower TARGET_ENTROPY to -0.1 to stop alpha explosion
 WARMUP_STEPS    = 5_000        # random exploration before gradient updates
-TOTAL_STEPS     = 500_000
+# TOTAL_STEPS     = 500_000
+TOTAL_STEPS = 50000
 LOG_EVERY       = 1_000
 SAVE_EVERY      = 50_000
 EVAL_EVERY      = 10_000

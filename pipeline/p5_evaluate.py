@@ -46,8 +46,10 @@ def run_rule_based(val_ds: ERCOTDataset) -> dict:
     No look-ahead; uses current price only.
     """
     # Compute median from training period
-    train_lmp = val_ds.df[PRICE_COLS[0]]
-    median_price = float(train_lmp.median())
+    # train_lmp = val_ds.df[PRICE_COLS[0]]
+    # median_price = float(train_lmp.median())
+    train_ds = ERCOTDataset("train")
+    median_price = float(train_ds.df[PRICE_COLS[0]].median())
 
     env   = ERCOTEnv(val_ds)
     obs   = env.reset()
@@ -192,7 +194,8 @@ def run_sac_agent(val_ds: ERCOTDataset, max_steps: int = 5000) -> dict:
         action, new_soc = agent.select_action(pw, sv, tf, soc_val, deterministic=True)
         (pw, sv, tf, soc_arr), reward, done = env.step(action, new_soc)
         soc_val = float(soc_arr[0])
-        revenues.append(reward)
+        # revenues.append(reward)
+        revenues.append(reward * REWARD_SCALE)
         n_steps += 1
         if done:
             break
@@ -248,18 +251,23 @@ def main():
 
     val_ds  = ERCOTDataset("val")
     # MAX_STEPS = 5000
-    MAX_STEPS = 18000   # full val period
+    # MAX_STEPS = 18000   # full val period
+    MAX_STEPS_EVAL = 18000   # heuristic + SAC on full val period
+    MAX_STEPS_PIO  = 2000    # PIO is reference only — keep small
+
 
     print("\n[1] Running rule-based heuristic...")
     rule = run_rule_based(val_ds)
     print(f"    Total revenue: ${rule['total_rev']:,.2f}")
 
     print("\n[2] Running Perfect Information LP (PIO upper bound)...")
-    pio  = run_pio(val_ds, max_steps=MAX_STEPS)
+    # pio  = run_pio(val_ds, max_steps=MAX_STEPS)
+    pio  = run_pio(val_ds, max_steps=MAX_STEPS_PIO)
     print(f"    Total revenue: ${pio['total_rev']:,.2f}")
 
     print("\n[3] Running trained SAC agent (deterministic)...")
-    sac  = run_sac_agent(val_ds, max_steps=MAX_STEPS)
+    # sac  = run_sac_agent(val_ds, max_steps=MAX_STEPS)
+    sac  = run_sac_agent(val_ds, max_steps=MAX_STEPS_EVAL)
     print(f"    Total revenue: ${sac['total_rev']:,.2f}")
 
     results = [rule, pio, sac]

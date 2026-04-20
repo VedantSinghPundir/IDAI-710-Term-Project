@@ -26,6 +26,13 @@ from pipeline.config import *
 from pipeline.p3_models import TTFE, Actor, Critic, FeasibilityProjection
 from pipeline.p4_train  import ERCOTDataset, ERCOTEnv, SACAgent, flatten_obs
 
+# Force deterministic episode starts for reproducible evaluation
+def _deterministic_reset(self):
+    self.idx      = WINDOW_LEN
+    self.soc      = 0.5
+    self.ep_steps = 0
+    return self._obs()
+ERCOTEnv.reset = _deterministic_reset
 
 # ════════════════════════════════════════════════════════
 # BASELINE 1 — Rule-Based Heuristic

@@ -119,14 +119,15 @@ LR_CRITIC       = 3e-4
 LR_ALPHA        = 3e-4
 GAMMA           = 0.99
 TAU             = 0.005
-# TARGET_ENTROPY  = -1.0         # for 1-dim action (energy only)
-TARGET_ENTROPY = -0.1 #Fix: lower TARGET_ENTROPY to -0.1 to stop alpha explosion
+TARGET_ENTROPY  = -0.5         # for 1-dim action (energy only)
+# TARGET_ENTROPY = -0.1 #Fix: lower TARGET_ENTROPY to -0.1 to stop alpha explosion
 WARMUP_STEPS    = 5_000        # random exploration before gradient updates
 TOTAL_STEPS     = 500_000
 LOG_EVERY       = 1_000
 SAVE_EVERY      = 50_000
 EVAL_EVERY      = 10_000
-
+REWARD_SCALE    = 100.0        # fixed reward divisor (÷100 keeps Q-values stable)
+MAX_EP_STEPS    = 288          # one trading day = 288 five-minute intervals
 # ══════════════════════════════════════════════════════════
 # DEVICE
 # ══════════════════════════════════════════════════════════

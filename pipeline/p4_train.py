@@ -32,29 +32,29 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from pipeline.config import *
 from pipeline.p3_models import TTFE, Actor, Critic, FeasibilityProjection
 
-# ════════════════════════════════════════════════════════
-# RUNNING REWARD NORMALISER
-# ════════════════════════════════════════════════════════
+# # ════════════════════════════════════════════════════════
+# # RUNNING REWARD NORMALISER
+# # ════════════════════════════════════════════════════════
 
-class RunningNormaliser:
-    """
-    Tracks running mean and std of rewards using Welford's algorithm.
-    Normalises rewards to roughly [-clip, +clip] range regardless of
-    price spike magnitude. Far better than dividing by a fixed constant.
-    """
-    def __init__(self, clip: float = 10.0):
-        self.mean  = 0.0
-        self.var   = 1.0
-        self.count = 0
-        self.clip  = clip
+# class RunningNormaliser:
+#     """
+#     Tracks running mean and std of rewards using Welford's algorithm.
+#     Normalises rewards to roughly [-clip, +clip] range regardless of
+#     price spike magnitude. Far better than dividing by a fixed constant.
+#     """
+#     def __init__(self, clip: float = 10.0):
+#         self.mean  = 0.0
+#         self.var   = 1.0
+#         self.count = 0
+#         self.clip  = clip
 
-    def update_and_normalise(self, reward: float) -> float:
-        self.count += 1
-        delta      = reward - self.mean
-        self.mean += delta / self.count
-        self.var  += (delta * (reward - self.mean) - self.var) / self.count
-        std        = max(math.sqrt(abs(self.var)), 1e-6)
-        return float(np.clip(reward / std, -self.clip, self.clip))
+#     def update_and_normalise(self, reward: float) -> float:
+#         self.count += 1
+#         delta      = reward - self.mean
+#         self.mean += delta / self.count
+#         self.var  += (delta * (reward - self.mean) - self.var) / self.count
+#         std        = max(math.sqrt(abs(self.var)), 1e-6)
+#         return float(np.clip(reward / std, -self.clip, self.clip))
 
 # ════════════════════════════════════════════════════════
 # DATASET LOADER
@@ -207,37 +207,54 @@ class ERCOTEnv:
         self.ds  = dataset
         self.idx = WINDOW_LEN
         self.soc = 0.5
+        self.ep_steps = 0 
 
     # def reset(self):
     #     self.idx = WINDOW_LEN
     #     self.soc = 0.5
     #     return self._obs()
+    # def reset(self):
+    #     max_start = int(len(self.ds) * 0.8)
+    #     self.idx  = np.random.randint(WINDOW_LEN, max_start)
+    #     self.soc  = np.random.uniform(0.3, 0.7)
+    #     return self._obs()
     def reset(self):
-        max_start = int(len(self.ds) * 0.8)
-        self.idx  = np.random.randint(WINDOW_LEN, max_start)
-        self.soc  = np.random.uniform(0.3, 0.7)
+        max_start     = int(len(self.ds) * 0.8)
+        self.idx      = np.random.randint(WINDOW_LEN, max_start)
+        self.soc      = np.random.uniform(0.3, 0.7)
+        self.ep_steps = 0          # ← ADD THIS
         return self._obs()
-
     def _obs(self):
         pw  = self.ds.get_price_window(self.idx)
         sv  = self.ds.get_system_vars(self.idx)
         tf  = ERCOTDataset.time_features(self.ds.get_timestamp(self.idx))
         soc = np.array([self.soc], dtype=np.float32)
         return pw, sv, tf, soc
-
+    
     def step(self, action: float, new_soc: float):
         rt_lmp     = self.ds.get_rt_lmp(self.idx)
-        power_mw   = -action * BATTERY_POWER_MW    # +ve when discharging (selling)
+        power_mw   = -action * BATTERY_POWER_MW
         energy_mwh = power_mw * INTERVAL_H
-        # reward     = energy_mwh * rt_lmp            # $/interval
-        # reward = (energy_mwh * rt_lmp) / 1000.0
-        reward = energy_mwh * rt_lmp
-
-        self.soc = new_soc
-        self.idx += 1
-        done = (self.idx >= len(self.ds) - 1)
+        reward     = (energy_mwh * rt_lmp) / REWARD_SCALE   # ← SCALED
+        self.soc       = new_soc
+        self.idx      += 1
+        self.ep_steps += 1                                   # ← ADD
+        done = (self.idx >= len(self.ds) - 1) or (self.ep_steps >= MAX_EP_STEPS)  # ← ADD
         return self._obs(), reward, done
 
+    # def step(self, action: float, new_soc: float):
+    #     rt_lmp     = self.ds.get_rt_lmp(self.idx)
+    #     power_mw   = -action * BATTERY_POWER_MW    # +ve when discharging (selling)
+    #     energy_mwh = power_mw * INTERVAL_H
+    #     # reward     = energy_mwh * rt_lmp            # $/interval
+    #     # reward = (energy_mwh * rt_lmp) / 1000.0
+    #     reward = energy_mwh * rt_lmp
+
+    #     self.soc = new_soc
+    #     self.idx += 1
+    #     done = (self.idx >= len(self.ds) - 1)
+    #     return self._obs(), reward, done
+    
 
 # ════════════════════════════════════════════════════════
 # REPLAY BUFFER
@@ -444,6 +461,51 @@ def quick_val(agent: SACAgent, val_dataset: ERCOTDataset,
 
     return total_rev
 
+# ADD this function before main():
+def collect_demonstrations(env: ERCOTEnv, dataset: ERCOTDataset,
+                           buffer: ReplayBuffer, n_steps: int = 10000):
+    """
+    Fill replay buffer with rule-based heuristic transitions.
+    Charge when rt_lmp < median, discharge when rt_lmp >= median.
+    This bootstraps the critic with meaningful value estimates.
+    """
+    print(f"[Demo] Collecting {n_steps} rule-based demonstrations...")
+    median_price = float(dataset.df[PRICE_COLS[0]].median())
+    obs = env.reset()
+    pw, sv, tf, soc_arr = obs
+    soc_val = float(soc_arr[0])
+
+    for i in range(n_steps):
+        rt_lmp = dataset.get_rt_lmp(env.idx)
+        # Rule: charge below median, discharge above
+        raw_action = -1.0 if rt_lmp >= median_price else 1.0
+        # Apply feasibility
+        a_t = torch.FloatTensor([[raw_action]]).to(DEVICE)
+        s_t = torch.FloatTensor([[soc_val]]).to(DEVICE)
+        with torch.no_grad():
+            proj = FeasibilityProjection().to(DEVICE)
+            _, ns_t = proj(a_t, s_t)
+        action  = raw_action
+        new_soc = ns_t.item()
+
+        next_obs, reward, done = env.step(action, new_soc)
+        npw, nsv, ntf, nsoc_arr = next_obs
+
+        obs_flat  = flatten_obs(pw,  sv,  tf,  soc_arr)
+        nobs_flat = flatten_obs(npw, nsv, ntf, nsoc_arr)
+        buffer.push(obs_flat, action, reward, nobs_flat, float(done))
+        # scaled_reward = reward / REWARD_SCALE
+        # buffer.push(obs_flat, action, scaled_reward, nobs_flat, float(done))
+
+        pw, sv, tf, soc_arr = next_obs
+        soc_val = float(nsoc_arr[0])
+
+        if done:
+            obs = env.reset()
+            pw, sv, tf, soc_arr = obs
+            soc_val = float(soc_arr[0])
+
+    print(f"[Demo] Buffer filled with {len(buffer)} transitions")
 
 # ════════════════════════════════════════════════════════
 # MAIN TRAINING LOOP
@@ -454,21 +516,22 @@ def main():
     print("Pipeline 4 — Stage 1 SAC Training")
     print(f"  Device      : {DEVICE}")
     print(f"  Total steps : {TOTAL_STEPS:,}")
-    print(f"  Warmup steps: {WARMUP_STEPS:,}")
     print("=" * 60)
 
     os.makedirs(LOG_DIR, exist_ok=True)
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
     # Data
-    train_ds = ERCOTDataset("train")
-    val_ds   = ERCOTDataset("val")
+    train_ds  = ERCOTDataset("train")
+    val_ds    = ERCOTDataset("val")
     train_env = ERCOTEnv(train_ds)
 
     # Agent + buffer
     agent  = SACAgent()
     buffer = ReplayBuffer()
-    reward_normaliser = RunningNormaliser(clip=10.0)
+
+    # ── Bootstrap buffer with rule-based demonstrations ──────────
+    collect_demonstrations(train_env, train_ds, buffer, n_steps=10000)
 
     # Log file
     log_path = os.path.join(LOG_DIR, "training_log.csv")
@@ -478,49 +541,35 @@ def main():
                      "episode_reward", "val_revenue"])
 
     # State
-    obs_parts  = train_env.reset()
+    obs_parts = train_env.reset()
     pw, sv, tf, soc_arr = obs_parts
-    soc_val    = float(soc_arr[0])
-    ep_reward  = 0.0
-    ep_step    = 0
-    best_val   = -float("inf")
+    soc_val   = float(soc_arr[0])
+    ep_reward = 0.0
+    best_val  = -float("inf")
     recent_losses = {"critic_loss": [], "actor_loss": [], "alpha": []}
 
     print(f"\nStarting training loop...\n")
 
     for step in range(1, TOTAL_STEPS + 1):
 
-        # ── Select action ──────────────────────────────────────────
-        if step <= WARMUP_STEPS:
-            # Random action during warmup
-            raw_action = np.random.uniform(-1, 1)
-            with torch.no_grad():
-                a_t = torch.FloatTensor([[raw_action]]).to(DEVICE)
-                s_t = torch.FloatTensor([[soc_val]]).to(DEVICE)
-                _, ns_t = agent.proj(a_t, s_t)
-            action, new_soc = raw_action, ns_t.item()
-        else:
-            action, new_soc = agent.select_action(pw, sv, tf, soc_val)
+        # ── Select action (no warmup — buffer pre-filled) ──────────
+        action, new_soc = agent.select_action(pw, sv, tf, soc_val)
 
         # ── Environment step ───────────────────────────────────────
         next_obs, reward, done = train_env.step(action, new_soc)
         npw, nsv, ntf, nsoc_arr = next_obs
 
-        # ── Store transition ───────────────────────────────────────
+        # ── Store transition (reward already scaled in env.step) ───
         obs_flat  = flatten_obs(pw,  sv,  tf,  soc_arr)
         nobs_flat = flatten_obs(npw, nsv, ntf, nsoc_arr)
-        # buffer.push(obs_flat, action, reward, nobs_flat, float(done))
-        reward_norm = reward_normaliser.update_and_normalise(reward)
-        buffer.push(obs_flat, action, reward_norm, nobs_flat, float(done))
+        buffer.push(obs_flat, action, reward, nobs_flat, float(done))
 
-        ep_reward += reward
-        ep_step   += 1
+        ep_reward += reward * REWARD_SCALE   # track real dollars
 
         # ── SAC update ─────────────────────────────────────────────
-        if step > WARMUP_STEPS:
-            info = agent.update(buffer)
-            for k, v in info.items():
-                recent_losses[k].append(v)
+        info = agent.update(buffer)
+        for k, v in info.items():
+            recent_losses[k].append(v)
 
         # ── Advance state ──────────────────────────────────────────
         pw, sv, tf, soc_arr = next_obs
@@ -532,7 +581,6 @@ def main():
             pw, sv, tf, soc_arr = obs_parts
             soc_val   = float(soc_arr[0])
             ep_reward = 0.0
-            ep_step   = 0
 
         # ── Logging ────────────────────────────────────────────────
         if step % LOG_EVERY == 0:
@@ -542,8 +590,8 @@ def main():
             print(f"  step={step:>7,} | critic={cl:.4f} | actor={al:.4f} | alpha={alp:.4f}")
 
         # ── Validation ─────────────────────────────────────────────
-        if step % EVAL_EVERY == 0 and step > WARMUP_STEPS:
-            val_rev = quick_val(agent, val_ds)
+        if step % EVAL_EVERY == 0:
+            val_rev = quick_val(agent, val_ds) * REWARD_SCALE  # display real dollars
             print(f"  ★ Val revenue (2000 steps): ${val_rev:+,.2f}")
             writer.writerow([step, cl, al, alp, ep_reward, val_rev])
             log_file.flush()

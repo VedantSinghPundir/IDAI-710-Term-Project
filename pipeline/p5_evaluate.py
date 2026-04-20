@@ -75,8 +75,10 @@ def run_rule_based(val_ds: ERCOTDataset) -> dict:
 
         (pw, sv, tf, soc_arr), reward, done = env.step(actual_action, new_soc)
         soc = float(soc_arr[0])
-        total_rev += reward
-        revenues.append(reward)
+        # total_rev += reward
+        total_rev += reward * REWARD_SCALE
+        # revenues.append(reward)
+        revenues.append(reward * REWARD_SCALE)
         n_steps += 1
 
         if done:

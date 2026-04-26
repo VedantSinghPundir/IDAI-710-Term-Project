@@ -1,0 +1,30 @@
+nohup: ignoring input
+============================================================
+Pipeline 4 — Stage 1 SAC Training
+  Device      : cuda
+  Total steps : 50,000
+============================================================
+[Dataset:train] 601,647 rows | 2020-01-01 → 2025-09-30
+[Dataset:val] 18,427 rows | 2025-10-01 → 2025-12-04
+/home/stu5/s7/vp2364/IDAI-710-Term-Project/pipeline/p3_models.py:61: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.transformer = nn.TransformerEncoder(enc_layer, num_layers=TTFE_NLAYERS)
+[Demo] Collecting 10000 rule-based demonstrations...
+[Demo] Buffer filled with 10000 transitions
+
+Starting training loop...
+
+  step=  1,000 | critic=46.0825 | actor=-0.2573 | alpha=0.7528
+  step=  2,000 | critic=30.9155 | actor=-1.4133 | alpha=0.5651
+  step=  3,000 | critic=30.2219 | actor=-0.4092 | alpha=0.4300
+  step=  4,000 | critic=63.7299 | actor=-1.9823 | alpha=0.3302
+  step=  5,000 | critic=140.9568 | actor=-3.9529 | alpha=0.2551
+  step=  6,000 | critic=361.4968 | actor=-8.0179 | alpha=0.2017
+  step=  7,000 | critic=252.8669 | actor=-12.5102 | alpha=0.1638
+  step=  8,000 | critic=390.6089 | actor=-14.5074 | alpha=0.1397
+  step=  9,000 | critic=99.7153 | actor=-19.6091 | alpha=0.1283
+  step= 10,000 | critic=294.4715 | actor=-20.6271 | alpha=0.1249
+  ★ Val revenue (2000 steps): $+239.54
+  [Saved] stage1_best.pt
+  ↑ New best: $+239.54
+  step= 11,000 | critic=402.6581 | actor=-25.7054 | alpha=0.1237
+  step= 12,000 | critic=469.6533 | actor=-30.3625 | alpha=0.1300

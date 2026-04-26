@@ -1,0 +1,590 @@
+nohup: ignoring input
+============================================================
+Pipeline 4 — Stage 1 SAC Training
+  Device      : cuda
+  Total steps : 500,000
+============================================================
+[Dataset:train] 601,647 rows | 2020-01-01 → 2025-09-30
+[Dataset:val] 18,427 rows | 2025-10-01 → 2025-12-04
+/home/stu5/s7/vp2364/IDAI-710-Term-Project/pipeline/p3_models.py:61: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.transformer = nn.TransformerEncoder(enc_layer, num_layers=TTFE_NLAYERS)
+[Demo] Collecting 10000 rule-based demonstrations...
+[Demo] Buffer filled with 10000 transitions
+
+Starting training loop...
+
+  step=  1,000 | critic=31.6799 | actor=-4.7498 | alpha=0.7615
+  step=  2,000 | critic=21.6305 | actor=-4.4787 | alpha=0.5750
+  step=  3,000 | critic=25.0837 | actor=-5.2517 | alpha=0.4383
+  step=  4,000 | critic=22.5674 | actor=-4.0376 | alpha=0.3343
+  step=  5,000 | critic=33.5260 | actor=-6.2273 | alpha=0.2615
+  step=  6,000 | critic=43.0245 | actor=-9.7229 | alpha=0.2127
+  step=  7,000 | critic=55.8399 | actor=-12.5618 | alpha=0.1775
+  step=  8,000 | critic=51.6339 | actor=-14.8548 | alpha=0.1585
+  step=  9,000 | critic=65.1323 | actor=-18.7965 | alpha=0.1484
+  step= 10,000 | critic=67.0108 | actor=-23.2204 | alpha=0.1453
+  ★ Val revenue (2000 steps): $+1,166.89
+  [Saved] stage1_best.pt
+  ↑ New best: $+1,166.89
+  step= 11,000 | critic=86.6091 | actor=-26.4967 | alpha=0.1440
+  step= 12,000 | critic=109.2385 | actor=-31.7351 | alpha=0.1430
+  step= 13,000 | critic=94.1831 | actor=-35.2182 | alpha=0.1330
+  step= 14,000 | critic=113.9687 | actor=-36.9908 | alpha=0.1421
+  step= 15,000 | critic=142.9286 | actor=-40.4403 | alpha=0.1387
+  step= 16,000 | critic=177.5645 | actor=-42.6894 | alpha=0.1322
+  step= 17,000 | critic=106.8667 | actor=-45.3779 | alpha=0.1307
+  step= 18,000 | critic=118.8469 | actor=-45.0798 | alpha=0.1289
+  step= 19,000 | critic=156.3034 | actor=-46.5519 | alpha=0.1286
+  step= 20,000 | critic=145.5844 | actor=-48.5259 | alpha=0.1353
+  ★ Val revenue (2000 steps): $+1,012.54
+  step= 21,000 | critic=140.1209 | actor=-49.8228 | alpha=0.1387
+  step= 22,000 | critic=102.4705 | actor=-51.2901 | alpha=0.1345
+  step= 23,000 | critic=171.6875 | actor=-50.0981 | alpha=0.1341
+  step= 24,000 | critic=161.0341 | actor=-52.0299 | alpha=0.1384
+  step= 25,000 | critic=161.9063 | actor=-51.4923 | alpha=0.1246
+  step= 26,000 | critic=183.0253 | actor=-52.2358 | alpha=0.1185
+  step= 27,000 | critic=131.9687 | actor=-51.8616 | alpha=0.1238
+  step= 28,000 | critic=161.6144 | actor=-51.2345 | alpha=0.1249
+  step= 29,000 | critic=119.5560 | actor=-50.5483 | alpha=0.1236
+  step= 30,000 | critic=220.9841 | actor=-51.0477 | alpha=0.1163
+  ★ Val revenue (2000 steps): $+1,354.29
+  [Saved] stage1_best.pt
+  ↑ New best: $+1,354.29
+  step= 31,000 | critic=191.9625 | actor=-51.1418 | alpha=0.1012
+  step= 32,000 | critic=139.6762 | actor=-52.6626 | alpha=0.1154
+  step= 33,000 | critic=179.2664 | actor=-52.0642 | alpha=0.1143
+  step= 34,000 | critic=132.0349 | actor=-51.1689 | alpha=0.1142
+  step= 35,000 | critic=188.1126 | actor=-52.0859 | alpha=0.1177
+  step= 36,000 | critic=161.8046 | actor=-51.6395 | alpha=0.1175
+  step= 37,000 | critic=102.7130 | actor=-50.5857 | alpha=0.1404
+  step= 38,000 | critic=150.3415 | actor=-54.3799 | alpha=0.1227
+  step= 39,000 | critic=104.4503 | actor=-52.7778 | alpha=0.1187
+  step= 40,000 | critic=138.0181 | actor=-54.2257 | alpha=0.1051
+  ★ Val revenue (2000 steps): $+1,098.25
+  step= 41,000 | critic=96.1513 | actor=-53.4866 | alpha=0.1054
+  step= 42,000 | critic=103.3006 | actor=-53.0235 | alpha=0.1279
+  step= 43,000 | critic=87.3811 | actor=-53.9044 | alpha=0.1292
+  step= 44,000 | critic=79.1304 | actor=-55.2268 | alpha=0.1208
+  step= 45,000 | critic=95.1408 | actor=-56.6428 | alpha=0.1091
+  step= 46,000 | critic=71.5488 | actor=-55.6574 | alpha=0.1319
+  step= 47,000 | critic=78.6295 | actor=-55.7929 | alpha=0.1437
+  step= 48,000 | critic=90.7342 | actor=-53.9745 | alpha=0.1503
+  step= 49,000 | critic=69.6263 | actor=-55.9955 | alpha=0.1326
+  step= 50,000 | critic=93.2170 | actor=-56.6342 | alpha=0.1358
+  ★ Val revenue (2000 steps): $+4,443.45
+  [Saved] stage1_best.pt
+  ↑ New best: $+4,443.45
+  [Saved] stage1_step50000.pt
+  step= 51,000 | critic=77.6729 | actor=-55.5000 | alpha=0.1628
+  step= 52,000 | critic=57.2719 | actor=-55.2609 | alpha=0.1587
+  step= 53,000 | critic=58.2143 | actor=-56.2030 | alpha=0.1558
+  step= 54,000 | critic=50.3932 | actor=-55.5900 | alpha=0.1633
+  step= 55,000 | critic=50.4989 | actor=-55.6476 | alpha=0.1461
+  step= 56,000 | critic=51.7340 | actor=-57.2757 | alpha=0.1545
+  step= 57,000 | critic=53.7860 | actor=-57.9245 | alpha=0.1683
+  step= 58,000 | critic=48.8024 | actor=-57.8830 | alpha=0.1721
+  step= 59,000 | critic=48.5969 | actor=-58.4591 | alpha=0.1641
+  step= 60,000 | critic=53.1806 | actor=-57.7461 | alpha=0.1689
+  ★ Val revenue (2000 steps): $+1,089.41
+  step= 61,000 | critic=50.6192 | actor=-58.9804 | alpha=0.1852
+  step= 62,000 | critic=54.2692 | actor=-58.5498 | alpha=0.1979
+  step= 63,000 | critic=54.5820 | actor=-58.8241 | alpha=0.1673
+  step= 64,000 | critic=67.3003 | actor=-60.2384 | alpha=0.1569
+  step= 65,000 | critic=55.4617 | actor=-58.3199 | alpha=0.1756
+  step= 66,000 | critic=49.0679 | actor=-57.5672 | alpha=0.1742
+  step= 67,000 | critic=44.8887 | actor=-56.2623 | alpha=0.1852
+  step= 68,000 | critic=39.6220 | actor=-57.9171 | alpha=0.1755
+  step= 69,000 | critic=40.1157 | actor=-57.4213 | alpha=0.1780
+  step= 70,000 | critic=45.7286 | actor=-57.0705 | alpha=0.1825
+  ★ Val revenue (2000 steps): $+374.26
+  step= 71,000 | critic=40.3548 | actor=-56.7458 | alpha=0.1763
+  step= 72,000 | critic=45.8641 | actor=-55.6855 | alpha=0.1688
+  step= 73,000 | critic=45.0057 | actor=-55.1576 | alpha=0.1668
+  step= 74,000 | critic=35.4534 | actor=-56.1519 | alpha=0.1721
+  step= 75,000 | critic=36.2402 | actor=-56.3267 | alpha=0.1735
+  step= 76,000 | critic=42.0639 | actor=-56.6041 | alpha=0.1575
+  step= 77,000 | critic=37.5301 | actor=-55.9354 | alpha=0.1510
+  step= 78,000 | critic=37.0763 | actor=-55.0770 | alpha=0.1718
+  step= 79,000 | critic=31.7706 | actor=-54.8672 | alpha=0.1712
+  step= 80,000 | critic=40.1339 | actor=-55.8084 | alpha=0.1713
+  ★ Val revenue (2000 steps): $+1,504.77
+  step= 81,000 | critic=47.7875 | actor=-57.8138 | alpha=0.1822
+  step= 82,000 | critic=51.2172 | actor=-61.0527 | alpha=0.1951
+  step= 83,000 | critic=48.7276 | actor=-61.7186 | alpha=0.1898
+  step= 84,000 | critic=62.5270 | actor=-60.4896 | alpha=0.1774
+  step= 85,000 | critic=51.1495 | actor=-59.3530 | alpha=0.1679
+  step= 86,000 | critic=48.1873 | actor=-58.8963 | alpha=0.1611
+  step= 87,000 | critic=46.8344 | actor=-58.2775 | alpha=0.1509
+  step= 88,000 | critic=46.3438 | actor=-57.4024 | alpha=0.1592
+  step= 89,000 | critic=46.7889 | actor=-57.5098 | alpha=0.1816
+  step= 90,000 | critic=45.4857 | actor=-59.7868 | alpha=0.1682
+  ★ Val revenue (2000 steps): $+851.66
+  step= 91,000 | critic=39.3021 | actor=-59.1228 | alpha=0.1800
+  step= 92,000 | critic=50.9422 | actor=-61.5840 | alpha=0.1896
+  step= 93,000 | critic=41.4394 | actor=-59.8316 | alpha=0.1809
+  step= 94,000 | critic=52.4145 | actor=-57.9189 | alpha=0.1839
+  step= 95,000 | critic=56.4914 | actor=-61.9741 | alpha=0.1666
+  step= 96,000 | critic=44.9367 | actor=-60.7320 | alpha=0.1544
+  step= 97,000 | critic=41.5390 | actor=-60.1312 | alpha=0.1510
+  step= 98,000 | critic=55.0032 | actor=-65.9974 | alpha=0.1676
+  step= 99,000 | critic=51.6520 | actor=-65.0610 | alpha=0.1591
+  step=100,000 | critic=46.7236 | actor=-65.9025 | alpha=0.1960
+  ★ Val revenue (2000 steps): $+1,896.31
+  [Saved] stage1_step100000.pt
+  step=101,000 | critic=53.9407 | actor=-64.6678 | alpha=0.1908
+  step=102,000 | critic=46.2595 | actor=-64.0816 | alpha=0.1858
+  step=103,000 | critic=43.2094 | actor=-64.8678 | alpha=0.1601
+  step=104,000 | critic=50.9351 | actor=-66.1422 | alpha=0.1938
+  step=105,000 | critic=45.4694 | actor=-67.9871 | alpha=0.1904
+  step=106,000 | critic=61.8620 | actor=-71.6357 | alpha=0.2165
+  step=107,000 | critic=56.7632 | actor=-70.7625 | alpha=0.2285
+  step=108,000 | critic=55.9156 | actor=-72.4788 | alpha=0.2203
+  step=109,000 | critic=55.2077 | actor=-73.1129 | alpha=0.1651
+  step=110,000 | critic=55.2359 | actor=-72.8876 | alpha=0.1954
+  ★ Val revenue (2000 steps): $+1,221.68
+  step=111,000 | critic=62.4216 | actor=-73.1363 | alpha=0.2026
+  step=112,000 | critic=51.3174 | actor=-72.8885 | alpha=0.2090
+  step=113,000 | critic=51.4704 | actor=-72.3925 | alpha=0.1985
+  step=114,000 | critic=53.7034 | actor=-71.8648 | alpha=0.1882
+  step=115,000 | critic=60.1097 | actor=-72.8050 | alpha=0.1823
+  step=116,000 | critic=54.0998 | actor=-71.2396 | alpha=0.2038
+  step=117,000 | critic=59.3807 | actor=-73.5382 | alpha=0.2003
+  step=118,000 | critic=57.9525 | actor=-76.1362 | alpha=0.2149
+  step=119,000 | critic=60.4399 | actor=-75.9530 | alpha=0.2356
+  step=120,000 | critic=62.2279 | actor=-74.9165 | alpha=0.2230
+  ★ Val revenue (2000 steps): $+1,877.39
+  step=121,000 | critic=64.8382 | actor=-73.4793 | alpha=0.2154
+  step=122,000 | critic=57.1470 | actor=-73.3108 | alpha=0.2320
+  step=123,000 | critic=64.8970 | actor=-71.7228 | alpha=0.2174
+  step=124,000 | critic=59.5198 | actor=-72.1803 | alpha=0.2106
+  step=125,000 | critic=50.7803 | actor=-73.0258 | alpha=0.1905
+  step=126,000 | critic=47.7390 | actor=-72.2403 | alpha=0.2053
+  step=127,000 | critic=63.1330 | actor=-72.0169 | alpha=0.2241
+  step=128,000 | critic=49.6898 | actor=-74.0168 | alpha=0.1682
+  step=129,000 | critic=52.4713 | actor=-76.4276 | alpha=0.1560
+  step=130,000 | critic=67.7886 | actor=-78.4073 | alpha=0.2058
+  ★ Val revenue (2000 steps): $+849.48
+  step=131,000 | critic=53.7613 | actor=-78.7219 | alpha=0.2161
+  step=132,000 | critic=65.9522 | actor=-78.5798 | alpha=0.2017
+  step=133,000 | critic=80.4090 | actor=-76.7720 | alpha=0.1979
+  step=134,000 | critic=57.0463 | actor=-75.3168 | alpha=0.1899
+  step=135,000 | critic=69.6328 | actor=-76.4285 | alpha=0.1956
+  step=136,000 | critic=64.7666 | actor=-74.7220 | alpha=0.1843
+  step=137,000 | critic=54.3854 | actor=-73.2599 | alpha=0.1799
+  step=138,000 | critic=50.1461 | actor=-75.7111 | alpha=0.1591
+  step=139,000 | critic=58.9387 | actor=-74.2640 | alpha=0.1592
+  step=140,000 | critic=70.8663 | actor=-73.2332 | alpha=0.2070
+  ★ Val revenue (2000 steps): $+116.00
+  step=141,000 | critic=53.8389 | actor=-74.3661 | alpha=0.2014
+  step=142,000 | critic=73.0702 | actor=-78.4804 | alpha=0.1455
+  step=143,000 | critic=64.9545 | actor=-76.4546 | alpha=0.1354
+  step=144,000 | critic=69.3823 | actor=-73.8936 | alpha=0.1442
+  step=145,000 | critic=61.0648 | actor=-73.6125 | alpha=0.1687
+  step=146,000 | critic=64.8455 | actor=-73.2978 | alpha=0.1631
+  step=147,000 | critic=68.7164 | actor=-74.2993 | alpha=0.1814
+  step=148,000 | critic=67.1367 | actor=-74.0471 | alpha=0.2070
+  step=149,000 | critic=49.2651 | actor=-73.8831 | alpha=0.1867
+  step=150,000 | critic=54.4436 | actor=-73.2379 | alpha=0.2218
+  ★ Val revenue (2000 steps): $+1,281.10
+  [Saved] stage1_step150000.pt
+  step=151,000 | critic=71.3363 | actor=-73.9216 | alpha=0.1987
+  step=152,000 | critic=69.1229 | actor=-72.3075 | alpha=0.1976
+  step=153,000 | critic=61.8916 | actor=-72.5458 | alpha=0.1527
+  step=154,000 | critic=55.4885 | actor=-71.0733 | alpha=0.1561
+  step=155,000 | critic=52.5052 | actor=-70.1416 | alpha=0.1838
+  step=156,000 | critic=54.7967 | actor=-71.4628 | alpha=0.1939
+  step=157,000 | critic=63.9195 | actor=-69.1141 | alpha=0.1815
+  step=158,000 | critic=63.2748 | actor=-69.2799 | alpha=0.2047
+  step=159,000 | critic=55.8587 | actor=-68.8301 | alpha=0.2076
+  step=160,000 | critic=64.0553 | actor=-67.9408 | alpha=0.2149
+  ★ Val revenue (2000 steps): $+1,678.37
+  step=161,000 | critic=54.8082 | actor=-67.4834 | alpha=0.2078
+  step=162,000 | critic=58.6801 | actor=-66.2230 | alpha=0.1524
+  step=163,000 | critic=58.1100 | actor=-66.1469 | alpha=0.1527
+  step=164,000 | critic=61.6597 | actor=-64.0103 | alpha=0.1674
+  step=165,000 | critic=65.0655 | actor=-65.3333 | alpha=0.1782
+  step=166,000 | critic=58.8428 | actor=-64.2570 | alpha=0.1765
+  step=167,000 | critic=48.8325 | actor=-64.6083 | alpha=0.2029
+  step=168,000 | critic=59.4899 | actor=-64.9733 | alpha=0.1495
+  step=169,000 | critic=56.2175 | actor=-65.2774 | alpha=0.1548
+  step=170,000 | critic=44.4743 | actor=-62.9094 | alpha=0.1491
+  ★ Val revenue (2000 steps): $+1,697.72
+  step=171,000 | critic=49.1146 | actor=-62.5712 | alpha=0.1496
+  step=172,000 | critic=50.8367 | actor=-62.9583 | alpha=0.1653
+  step=173,000 | critic=56.3774 | actor=-62.4291 | alpha=0.1693
+  step=174,000 | critic=54.8414 | actor=-62.5231 | alpha=0.1608
+  step=175,000 | critic=64.2259 | actor=-62.6126 | alpha=0.1468
+  step=176,000 | critic=50.1150 | actor=-60.7662 | alpha=0.1667
+  step=177,000 | critic=46.3609 | actor=-60.2816 | alpha=0.1575
+  step=178,000 | critic=59.5336 | actor=-59.3113 | alpha=0.1642
+  step=179,000 | critic=48.8997 | actor=-58.3386 | alpha=0.1542
+  step=180,000 | critic=54.9759 | actor=-59.7821 | alpha=0.1485
+  ★ Val revenue (2000 steps): $+2,998.52
+  step=181,000 | critic=57.7868 | actor=-57.8697 | alpha=0.1532
+  step=182,000 | critic=56.8522 | actor=-56.5563 | alpha=0.1687
+  step=183,000 | critic=55.5174 | actor=-55.2363 | alpha=0.1381
+  step=184,000 | critic=54.8903 | actor=-54.8611 | alpha=0.1445
+  step=185,000 | critic=52.5045 | actor=-54.7841 | alpha=0.1607
+  step=186,000 | critic=49.8551 | actor=-54.7755 | alpha=0.1558
+  step=187,000 | critic=47.6173 | actor=-53.4696 | alpha=0.1526
+  step=188,000 | critic=45.9600 | actor=-52.2849 | alpha=0.1485
+  step=189,000 | critic=44.6162 | actor=-51.1094 | alpha=0.1572
+  step=190,000 | critic=45.0311 | actor=-49.9629 | alpha=0.1646
+  ★ Val revenue (2000 steps): $+2,205.64
+  step=191,000 | critic=40.2685 | actor=-49.6497 | alpha=0.1544
+  step=192,000 | critic=44.1541 | actor=-49.3340 | alpha=0.1658
+  step=193,000 | critic=42.2007 | actor=-47.9618 | alpha=0.1564
+  step=194,000 | critic=36.4977 | actor=-46.9772 | alpha=0.1502
+  step=195,000 | critic=34.3308 | actor=-46.2155 | alpha=0.1486
+  step=196,000 | critic=39.1003 | actor=-45.7779 | alpha=0.1578
+  step=197,000 | critic=34.0596 | actor=-45.0692 | alpha=0.1554
+  step=198,000 | critic=33.4728 | actor=-45.1591 | alpha=0.1608
+  step=199,000 | critic=33.1803 | actor=-45.1963 | alpha=0.1412
+  step=200,000 | critic=36.2149 | actor=-45.6328 | alpha=0.1169
+  ★ Val revenue (2000 steps): $+1,606.65
+  [Saved] stage1_step200000.pt
+  step=201,000 | critic=27.1079 | actor=-45.3183 | alpha=0.1414
+  step=202,000 | critic=32.1889 | actor=-44.7501 | alpha=0.1656
+  step=203,000 | critic=34.0879 | actor=-46.2217 | alpha=0.1768
+  step=204,000 | critic=33.2354 | actor=-45.7508 | alpha=0.1904
+  step=205,000 | critic=37.2559 | actor=-44.6458 | alpha=0.1787
+  step=206,000 | critic=33.7281 | actor=-44.2188 | alpha=0.1777
+  step=207,000 | critic=31.7422 | actor=-44.6098 | alpha=0.1871
+  step=208,000 | critic=38.2667 | actor=-49.6034 | alpha=0.1592
+  step=209,000 | critic=41.0923 | actor=-54.5402 | alpha=0.2132
+  step=210,000 | critic=38.5814 | actor=-52.9201 | alpha=0.2206
+  ★ Val revenue (2000 steps): $+1,059.74
+  step=211,000 | critic=37.6241 | actor=-52.9747 | alpha=0.2273
+  step=212,000 | critic=35.4936 | actor=-51.6040 | alpha=0.2149
+  step=213,000 | critic=39.1154 | actor=-51.3456 | alpha=0.2133
+  step=214,000 | critic=32.2109 | actor=-51.0338 | alpha=0.2086
+  step=215,000 | critic=40.8253 | actor=-50.4147 | alpha=0.2071
+  step=216,000 | critic=51.4934 | actor=-49.4691 | alpha=0.2115
+  step=217,000 | critic=52.2435 | actor=-48.7095 | alpha=0.2210
+  step=218,000 | critic=40.7390 | actor=-48.0490 | alpha=0.2121
+  step=219,000 | critic=42.4736 | actor=-47.4830 | alpha=0.1957
+  step=220,000 | critic=41.8958 | actor=-46.4829 | alpha=0.1976
+  ★ Val revenue (2000 steps): $+2,889.80
+  step=221,000 | critic=39.7230 | actor=-45.3250 | alpha=0.1997
+  step=222,000 | critic=43.2864 | actor=-45.9305 | alpha=0.2010
+  step=223,000 | critic=46.7183 | actor=-44.5102 | alpha=0.2056
+  step=224,000 | critic=38.7522 | actor=-44.8969 | alpha=0.2064
+  step=225,000 | critic=38.2153 | actor=-44.0293 | alpha=0.1820
+  step=226,000 | critic=56.9655 | actor=-50.8779 | alpha=0.1534
+  step=227,000 | critic=46.4346 | actor=-50.1807 | alpha=0.1151
+  step=228,000 | critic=42.1179 | actor=-50.5144 | alpha=0.1403
+  step=229,000 | critic=60.3219 | actor=-49.0658 | alpha=0.1650
+  step=230,000 | critic=40.3485 | actor=-49.6870 | alpha=0.1968
+  ★ Val revenue (2000 steps): $+1,221.75
+  step=231,000 | critic=44.2455 | actor=-49.7937 | alpha=0.2173
+  step=232,000 | critic=51.8560 | actor=-48.5524 | alpha=0.2105
+  step=233,000 | critic=58.7058 | actor=-48.4665 | alpha=0.2488
+  step=234,000 | critic=58.7074 | actor=-49.0254 | alpha=0.2970
+  step=235,000 | critic=50.9639 | actor=-49.2179 | alpha=0.2876
+  step=236,000 | critic=64.4403 | actor=-49.4687 | alpha=0.2664
+  step=237,000 | critic=57.0464 | actor=-49.5543 | alpha=0.2551
+  step=238,000 | critic=49.3669 | actor=-48.6881 | alpha=0.2422
+  step=239,000 | critic=57.8359 | actor=-47.7826 | alpha=0.2276
+  step=240,000 | critic=44.3026 | actor=-46.0187 | alpha=0.2324
+  ★ Val revenue (2000 steps): $+683.45
+  step=241,000 | critic=62.3638 | actor=-46.1605 | alpha=0.2286
+  step=242,000 | critic=47.3672 | actor=-44.9312 | alpha=0.2079
+  step=243,000 | critic=61.9905 | actor=-45.9544 | alpha=0.2026
+  step=244,000 | critic=60.0313 | actor=-44.7503 | alpha=0.2089
+  step=245,000 | critic=55.8956 | actor=-44.5408 | alpha=0.2119
+  step=246,000 | critic=52.0561 | actor=-46.3432 | alpha=0.2054
+  step=247,000 | critic=50.7612 | actor=-45.5567 | alpha=0.2147
+  step=248,000 | critic=42.9240 | actor=-45.6498 | alpha=0.2313
+  step=249,000 | critic=60.6186 | actor=-44.3159 | alpha=0.2126
+  step=250,000 | critic=62.6711 | actor=-44.7529 | alpha=0.2255
+  ★ Val revenue (2000 steps): $+1,788.20
+  [Saved] stage1_step250000.pt
+  step=251,000 | critic=53.7565 | actor=-43.8557 | alpha=0.2209
+  step=252,000 | critic=70.6585 | actor=-43.3477 | alpha=0.2152
+  step=253,000 | critic=64.3742 | actor=-42.5945 | alpha=0.2096
+  step=254,000 | critic=60.6642 | actor=-42.5913 | alpha=0.1916
+  step=255,000 | critic=59.6384 | actor=-42.2700 | alpha=0.1757
+  step=256,000 | critic=57.5731 | actor=-43.6466 | alpha=0.1970
+  step=257,000 | critic=63.6754 | actor=-43.4379 | alpha=0.2054
+  step=258,000 | critic=51.2704 | actor=-44.2615 | alpha=0.2101
+  step=259,000 | critic=71.7068 | actor=-43.2562 | alpha=0.1800
+  step=260,000 | critic=56.2667 | actor=-44.3737 | alpha=0.1811
+  ★ Val revenue (2000 steps): $+1,210.96
+  step=261,000 | critic=76.2131 | actor=-45.4225 | alpha=0.1942
+  step=262,000 | critic=65.1890 | actor=-46.5193 | alpha=0.2037
+  step=263,000 | critic=58.3384 | actor=-46.7123 | alpha=0.1643
+  step=264,000 | critic=132.0805 | actor=-130.7419 | alpha=0.1134
+  step=265,000 | critic=218.1555 | actor=-124.3018 | alpha=0.1024
+  step=266,000 | critic=263.2534 | actor=-117.7067 | alpha=0.1333
+  step=267,000 | critic=261.7450 | actor=-111.9106 | alpha=0.1856
+  step=268,000 | critic=218.8182 | actor=-104.2436 | alpha=0.2387
+  step=269,000 | critic=140.8403 | actor=-98.6662 | alpha=0.2633
+  step=270,000 | critic=156.4213 | actor=-92.5063 | alpha=0.2286
+  ★ Val revenue (2000 steps): $+741.12
+  step=271,000 | critic=123.9334 | actor=-85.5534 | alpha=0.1679
+  step=272,000 | critic=109.9493 | actor=-80.0813 | alpha=0.1451
+  step=273,000 | critic=93.2841 | actor=-79.1158 | alpha=0.1717
+  step=274,000 | critic=107.0754 | actor=-75.5010 | alpha=0.1830
+  step=275,000 | critic=97.8657 | actor=-102.4840 | alpha=0.1526
+  step=276,000 | critic=95.0387 | actor=-97.3611 | alpha=0.1656
+  step=277,000 | critic=103.3252 | actor=-94.4017 | alpha=0.1906
+  step=278,000 | critic=111.6971 | actor=-95.8458 | alpha=0.2371
+  step=279,000 | critic=98.7786 | actor=-92.6954 | alpha=0.2504
+  step=280,000 | critic=88.7487 | actor=-90.0526 | alpha=0.2437
+  ★ Val revenue (2000 steps): $+1,242.10
+  step=281,000 | critic=86.2111 | actor=-87.1770 | alpha=0.2450
+  step=282,000 | critic=90.6396 | actor=-84.2654 | alpha=0.2330
+  step=283,000 | critic=101.7116 | actor=-80.7904 | alpha=0.2146
+  step=284,000 | critic=75.3865 | actor=-78.6064 | alpha=0.2128
+  step=285,000 | critic=72.3786 | actor=-75.0525 | alpha=0.2014
+  step=286,000 | critic=76.7714 | actor=-73.0151 | alpha=0.1983
+  step=287,000 | critic=119.3995 | actor=-89.0811 | alpha=0.1274
+  step=288,000 | critic=112.8594 | actor=-81.6460 | alpha=0.1425
+  step=289,000 | critic=118.3392 | actor=-76.5168 | alpha=0.1510
+  step=290,000 | critic=87.3502 | actor=-75.2522 | alpha=0.1560
+  ★ Val revenue (2000 steps): $+646.15
+  step=291,000 | critic=84.9773 | actor=-75.5283 | alpha=0.1689
+  step=292,000 | critic=82.9612 | actor=-72.7455 | alpha=0.1901
+  step=293,000 | critic=77.7769 | actor=-71.1658 | alpha=0.1916
+  step=294,000 | critic=68.4510 | actor=-71.3960 | alpha=0.2047
+  step=295,000 | critic=107.0097 | actor=-78.2873 | alpha=0.1894
+  step=296,000 | critic=124.6104 | actor=-77.7199 | alpha=0.1666
+  step=297,000 | critic=134.2840 | actor=-77.6307 | alpha=0.1384
+  step=298,000 | critic=113.4616 | actor=-77.9364 | alpha=0.1629
+  step=299,000 | critic=126.8472 | actor=-76.1669 | alpha=0.1211
+  step=300,000 | critic=113.7539 | actor=-75.5929 | alpha=0.1579
+  ★ Val revenue (2000 steps): $+1,711.85
+  [Saved] stage1_step300000.pt
+  step=301,000 | critic=134.0729 | actor=-89.7090 | alpha=0.1673
+  step=302,000 | critic=105.2769 | actor=-85.8156 | alpha=0.1697
+  step=303,000 | critic=97.7700 | actor=-83.0848 | alpha=0.1663
+  step=304,000 | critic=109.0557 | actor=-92.8495 | alpha=0.2110
+  step=305,000 | critic=104.8551 | actor=-89.9816 | alpha=0.2332
+  step=306,000 | critic=118.0966 | actor=-86.8205 | alpha=0.2236
+  step=307,000 | critic=92.4777 | actor=-85.6471 | alpha=0.2163
+  step=308,000 | critic=99.6954 | actor=-88.7271 | alpha=0.1855
+  step=309,000 | critic=113.9449 | actor=-84.9115 | alpha=0.2259
+  step=310,000 | critic=123.6224 | actor=-84.3210 | alpha=0.2169
+  ★ Val revenue (2000 steps): $+1,044.07
+  step=311,000 | critic=93.2850 | actor=-82.6072 | alpha=0.2035
+  step=312,000 | critic=127.7032 | actor=-83.8274 | alpha=0.1770
+  step=313,000 | critic=121.9927 | actor=-85.5769 | alpha=0.1247
+  step=314,000 | critic=120.8673 | actor=-83.0813 | alpha=0.1435
+  step=315,000 | critic=141.7591 | actor=-83.7453 | alpha=0.1552
+  step=316,000 | critic=181.9376 | actor=-89.4241 | alpha=0.1880
+  step=317,000 | critic=132.2794 | actor=-90.6918 | alpha=0.1686
+  step=318,000 | critic=168.7528 | actor=-89.4788 | alpha=0.1618
+  step=319,000 | critic=155.2248 | actor=-87.6191 | alpha=0.1657
+  step=320,000 | critic=157.2357 | actor=-86.5198 | alpha=0.1865
+  ★ Val revenue (2000 steps): $+764.13
+  step=321,000 | critic=223.3880 | actor=-93.2059 | alpha=0.1459
+  step=322,000 | critic=253.7700 | actor=-89.5625 | alpha=0.1213
+  step=323,000 | critic=198.7047 | actor=-93.6230 | alpha=0.1598
+  step=324,000 | critic=166.6790 | actor=-92.0500 | alpha=0.1649
+  step=325,000 | critic=140.0000 | actor=-88.8165 | alpha=0.1331
+  step=326,000 | critic=172.2192 | actor=-91.7084 | alpha=0.1769
+  step=327,000 | critic=223.3985 | actor=-118.5719 | alpha=0.1233
+  step=328,000 | critic=183.8765 | actor=-113.6136 | alpha=0.0982
+  step=329,000 | critic=171.4951 | actor=-124.1405 | alpha=0.1288
+  step=330,000 | critic=191.8298 | actor=-121.1976 | alpha=0.1575
+  ★ Val revenue (2000 steps): $+738.70
+  step=331,000 | critic=215.0464 | actor=-116.5077 | alpha=0.1745
+  step=332,000 | critic=172.0560 | actor=-111.0458 | alpha=0.1669
+  step=333,000 | critic=214.7537 | actor=-113.2691 | alpha=0.1793
+  step=334,000 | critic=178.1979 | actor=-108.9416 | alpha=0.2010
+  step=335,000 | critic=158.4495 | actor=-104.8373 | alpha=0.2178
+  step=336,000 | critic=175.4004 | actor=-100.9122 | alpha=0.1784
+  step=337,000 | critic=189.3035 | actor=-102.8671 | alpha=0.1298
+  step=338,000 | critic=186.5436 | actor=-97.9556 | alpha=0.1328
+  step=339,000 | critic=220.2892 | actor=-99.6995 | alpha=0.1670
+  step=340,000 | critic=204.5804 | actor=-97.3730 | alpha=0.1921
+  ★ Val revenue (2000 steps): $+953.71
+  step=341,000 | critic=198.2620 | actor=-93.2003 | alpha=0.1679
+  step=342,000 | critic=182.6993 | actor=-90.9752 | alpha=0.1802
+  step=343,000 | critic=189.1471 | actor=-87.3949 | alpha=0.1758
+  step=344,000 | critic=232.8813 | actor=-98.8272 | alpha=0.1583
+  step=345,000 | critic=211.3985 | actor=-94.5624 | alpha=0.1548
+  step=346,000 | critic=133.0870 | actor=-93.8739 | alpha=0.1438
+  step=347,000 | critic=183.2265 | actor=-102.1253 | alpha=0.1928
+  step=348,000 | critic=201.6859 | actor=-101.1005 | alpha=0.1646
+  step=349,000 | critic=215.0105 | actor=-96.7615 | alpha=0.1664
+  step=350,000 | critic=156.6485 | actor=-109.0899 | alpha=0.2217
+  ★ Val revenue (2000 steps): $+2,918.25
+  [Saved] stage1_step350000.pt
+  step=351,000 | critic=181.9464 | actor=-103.8563 | alpha=0.2281
+  step=352,000 | critic=212.5364 | actor=-102.0431 | alpha=0.1701
+  step=353,000 | critic=200.7849 | actor=-97.6412 | alpha=0.1642
+  step=354,000 | critic=253.0570 | actor=-115.5454 | alpha=0.1843
+  step=355,000 | critic=182.9555 | actor=-121.1898 | alpha=0.2063
+  step=356,000 | critic=221.0839 | actor=-116.7468 | alpha=0.2121
+  step=357,000 | critic=178.3081 | actor=-112.1854 | alpha=0.2007
+  step=358,000 | critic=240.6915 | actor=-107.5399 | alpha=0.1950
+  step=359,000 | critic=222.0598 | actor=-104.0614 | alpha=0.1731
+  step=360,000 | critic=280.4580 | actor=-121.2047 | alpha=0.1029
+  ★ Val revenue (2000 steps): $+949.01
+  step=361,000 | critic=196.5953 | actor=-116.9576 | alpha=0.1209
+  step=362,000 | critic=165.1087 | actor=-112.9177 | alpha=0.1474
+  step=363,000 | critic=198.3380 | actor=-121.5808 | alpha=0.1650
+  step=364,000 | critic=170.7409 | actor=-115.4785 | alpha=0.1849
+  step=365,000 | critic=149.2732 | actor=-111.4808 | alpha=0.1808
+  step=366,000 | critic=177.4924 | actor=-116.9712 | alpha=0.1519
+  step=367,000 | critic=194.1554 | actor=-118.7252 | alpha=0.1561
+  step=368,000 | critic=236.4681 | actor=-114.3857 | alpha=0.1667
+  step=369,000 | critic=220.4137 | actor=-115.6580 | alpha=0.1344
+  step=370,000 | critic=214.6647 | actor=-126.4127 | alpha=0.1493
+  ★ Val revenue (2000 steps): $+822.01
+  step=371,000 | critic=236.6208 | actor=-124.8102 | alpha=0.1976
+  step=372,000 | critic=285.7684 | actor=-120.1287 | alpha=0.2282
+  step=373,000 | critic=261.3012 | actor=-124.6136 | alpha=0.1965
+  step=374,000 | critic=192.0800 | actor=-118.5303 | alpha=0.1575
+  step=375,000 | critic=190.4286 | actor=-120.3848 | alpha=0.1723
+  step=376,000 | critic=203.4174 | actor=-115.3870 | alpha=0.2023
+  step=377,000 | critic=270.7660 | actor=-115.1435 | alpha=0.2109
+  step=378,000 | critic=246.5273 | actor=-111.8683 | alpha=0.2194
+  step=379,000 | critic=278.1264 | actor=-107.8239 | alpha=0.1961
+  step=380,000 | critic=298.4229 | actor=-103.1920 | alpha=0.1979
+  ★ Val revenue (2000 steps): $+1,427.42
+  step=381,000 | critic=368.2138 | actor=-105.8632 | alpha=0.1498
+  step=382,000 | critic=347.7126 | actor=-105.6856 | alpha=0.1567
+  step=383,000 | critic=469.0881 | actor=-114.8515 | alpha=0.2168
+  step=384,000 | critic=455.0261 | actor=-114.5552 | alpha=0.2168
+  step=385,000 | critic=534.5250 | actor=-118.3128 | alpha=0.2406
+  step=386,000 | critic=548.5369 | actor=-115.1817 | alpha=0.1939
+  step=387,000 | critic=563.6653 | actor=-121.0301 | alpha=0.1404
+  step=388,000 | critic=673.9572 | actor=-139.1696 | alpha=0.1671
+  step=389,000 | critic=453.7711 | actor=-134.9405 | alpha=0.1911
+  step=390,000 | critic=766.6034 | actor=-147.2059 | alpha=0.1806
+  ★ Val revenue (2000 steps): $+1,493.69
+  step=391,000 | critic=717.5678 | actor=-151.2625 | alpha=0.2077
+  step=392,000 | critic=939.6725 | actor=-151.9529 | alpha=0.2297
+  step=393,000 | critic=979.9439 | actor=-167.9982 | alpha=0.2381
+  step=394,000 | critic=960.5346 | actor=-167.2474 | alpha=0.2009
+  step=395,000 | critic=1137.0542 | actor=-168.4971 | alpha=0.2100
+  step=396,000 | critic=982.3951 | actor=-168.3328 | alpha=0.1638
+  step=397,000 | critic=1025.3592 | actor=-167.5548 | alpha=0.2285
+  step=398,000 | critic=945.1908 | actor=-168.1642 | alpha=0.2472
+  step=399,000 | critic=862.7967 | actor=-171.0975 | alpha=0.2335
+  step=400,000 | critic=1033.1069 | actor=-190.2137 | alpha=0.1867
+  ★ Val revenue (2000 steps): $+552.40
+  [Saved] stage1_step400000.pt
+  step=401,000 | critic=728.9791 | actor=-204.6313 | alpha=0.1474
+  step=402,000 | critic=816.2784 | actor=-203.0790 | alpha=0.2023
+  step=403,000 | critic=519.1265 | actor=-195.2636 | alpha=0.2419
+  step=404,000 | critic=851.6717 | actor=-201.2966 | alpha=0.2409
+  step=405,000 | critic=699.9825 | actor=-202.0445 | alpha=0.3103
+  step=406,000 | critic=592.8192 | actor=-195.4219 | alpha=0.3395
+  step=407,000 | critic=671.3800 | actor=-193.4136 | alpha=0.3250
+  step=408,000 | critic=605.7217 | actor=-197.7651 | alpha=0.2199
+  step=409,000 | critic=640.6144 | actor=-227.6934 | alpha=0.3081
+  step=410,000 | critic=790.7595 | actor=-216.8005 | alpha=0.3237
+  ★ Val revenue (2000 steps): $+8,089.30
+  [Saved] stage1_best.pt
+  ↑ New best: $+8,089.30
+  step=411,000 | critic=873.2653 | actor=-224.4885 | alpha=0.2594
+  step=412,000 | critic=868.8148 | actor=-216.1277 | alpha=0.2192
+  step=413,000 | critic=838.6260 | actor=-220.4333 | alpha=0.2662
+  step=414,000 | critic=717.3834 | actor=-213.7994 | alpha=0.3033
+  step=415,000 | critic=689.9631 | actor=-205.2201 | alpha=0.2200
+  step=416,000 | critic=842.1827 | actor=-204.4651 | alpha=0.2574
+  step=417,000 | critic=590.4840 | actor=-197.5346 | alpha=0.3274
+  step=418,000 | critic=629.3513 | actor=-190.6671 | alpha=0.2938
+  step=419,000 | critic=772.5230 | actor=-183.0367 | alpha=0.2721
+  step=420,000 | critic=521.0898 | actor=-179.3067 | alpha=0.2330
+  ★ Val revenue (2000 steps): $+650.74
+  step=421,000 | critic=737.1488 | actor=-175.0446 | alpha=0.2595
+  step=422,000 | critic=557.8615 | actor=-169.1118 | alpha=0.3013
+  step=423,000 | critic=598.7143 | actor=-160.2734 | alpha=0.2452
+  step=424,000 | critic=556.2422 | actor=-152.8392 | alpha=0.2227
+  step=425,000 | critic=446.9429 | actor=-145.2298 | alpha=0.2206
+  step=426,000 | critic=496.6108 | actor=-138.4762 | alpha=0.2151
+  step=427,000 | critic=698.1489 | actor=-133.4920 | alpha=0.2184
+  step=428,000 | critic=562.3509 | actor=-127.9137 | alpha=0.2197
+  step=429,000 | critic=799.1088 | actor=-147.2018 | alpha=0.1457
+  step=430,000 | critic=577.8552 | actor=-140.4869 | alpha=0.1258
+  ★ Val revenue (2000 steps): $+1,632.30
+  step=431,000 | critic=587.7804 | actor=-152.7739 | alpha=0.2018
+  step=432,000 | critic=686.3776 | actor=-150.4981 | alpha=0.2460
+  step=433,000 | critic=721.6963 | actor=-149.9709 | alpha=0.2084
+  step=434,000 | critic=762.7738 | actor=-145.6572 | alpha=0.2151
+  step=435,000 | critic=668.9407 | actor=-140.9239 | alpha=0.2348
+  step=436,000 | critic=590.2890 | actor=-138.8520 | alpha=0.1989
+  step=437,000 | critic=499.3157 | actor=-135.5098 | alpha=0.2430
+  step=438,000 | critic=782.5585 | actor=-130.3952 | alpha=0.2164
+  step=439,000 | critic=570.7959 | actor=-125.5496 | alpha=0.2357
+  step=440,000 | critic=445.6094 | actor=-122.3785 | alpha=0.2505
+  ★ Val revenue (2000 steps): $+15.94
+  step=441,000 | critic=558.6032 | actor=-117.2488 | alpha=0.2488
+  step=442,000 | critic=522.8693 | actor=-113.2470 | alpha=0.2033
+  step=443,000 | critic=631.7925 | actor=-109.8242 | alpha=0.2212
+  step=444,000 | critic=583.3781 | actor=-104.9290 | alpha=0.2116
+  step=445,000 | critic=352.7441 | actor=-101.8434 | alpha=0.2411
+  step=446,000 | critic=488.6995 | actor=-100.4417 | alpha=0.1816
+  step=447,000 | critic=767.3132 | actor=-99.2077 | alpha=0.1843
+  step=448,000 | critic=436.6518 | actor=-94.0521 | alpha=0.1630
+  step=449,000 | critic=765.0573 | actor=-96.4391 | alpha=0.1316
+  step=450,000 | critic=586.5214 | actor=-95.9451 | alpha=0.1377
+  ★ Val revenue (2000 steps): $+1,594.19
+  [Saved] stage1_step450000.pt
+  step=451,000 | critic=458.9711 | actor=-95.2629 | alpha=0.1818
+  step=452,000 | critic=802.1434 | actor=-91.6235 | alpha=0.2036
+  step=453,000 | critic=704.8598 | actor=-88.0002 | alpha=0.2020
+  step=454,000 | critic=882.4849 | actor=-87.3415 | alpha=0.1999
+  step=455,000 | critic=712.5864 | actor=-84.6617 | alpha=0.2079
+  step=456,000 | critic=629.0296 | actor=-83.5259 | alpha=0.1894
+  step=457,000 | critic=648.5891 | actor=-80.0163 | alpha=0.1940
+  step=458,000 | critic=698.5477 | actor=-80.0520 | alpha=0.1885
+  step=459,000 | critic=711.4558 | actor=-78.5651 | alpha=0.1789
+  step=460,000 | critic=658.6690 | actor=-75.8024 | alpha=0.1860
+  ★ Val revenue (2000 steps): $+1,590.34
+  step=461,000 | critic=768.2377 | actor=-74.3254 | alpha=0.1716
+  step=462,000 | critic=997.9470 | actor=-72.0565 | alpha=0.1844
+  step=463,000 | critic=899.4826 | actor=-71.6014 | alpha=0.1861
+  step=464,000 | critic=605.4818 | actor=-69.2099 | alpha=0.1800
+  step=465,000 | critic=535.9101 | actor=-70.2182 | alpha=0.2152
+  step=466,000 | critic=707.4846 | actor=-70.3753 | alpha=0.1852
+  step=467,000 | critic=764.0332 | actor=-68.2131 | alpha=0.2003
+  step=468,000 | critic=805.3260 | actor=-65.7870 | alpha=0.1957
+  step=469,000 | critic=700.9287 | actor=-63.7154 | alpha=0.2060
+  step=470,000 | critic=724.8060 | actor=-63.1141 | alpha=0.1956
+  ★ Val revenue (2000 steps): $+1,283.06
+  step=471,000 | critic=591.4853 | actor=-62.3319 | alpha=0.1854
+  step=472,000 | critic=657.7572 | actor=-60.3621 | alpha=0.1940
+  step=473,000 | critic=819.4437 | actor=-57.7489 | alpha=0.1840
+  step=474,000 | critic=455.3585 | actor=-56.3315 | alpha=0.1706
+  step=475,000 | critic=728.1060 | actor=-55.0867 | alpha=0.1670
+  step=476,000 | critic=509.2420 | actor=-52.2966 | alpha=0.1541
+  step=477,000 | critic=576.4579 | actor=-52.6708 | alpha=0.1230
+  step=478,000 | critic=624.2109 | actor=-54.9904 | alpha=0.1167
+  step=479,000 | critic=614.7184 | actor=-53.9573 | alpha=0.1088
+  step=480,000 | critic=773.7050 | actor=-54.5404 | alpha=0.1263
+  ★ Val revenue (2000 steps): $+665.60
+  step=481,000 | critic=1021.0023 | actor=-53.6375 | alpha=0.1584
+  step=482,000 | critic=675.3532 | actor=-54.2998 | alpha=0.1658
+  step=483,000 | critic=635.3988 | actor=-51.6390 | alpha=0.1705
+  step=484,000 | critic=804.6206 | actor=-51.5090 | alpha=0.1811
+  step=485,000 | critic=737.6169 | actor=-49.3792 | alpha=0.1683
+  step=486,000 | critic=913.3110 | actor=-51.3384 | alpha=0.1747
+  step=487,000 | critic=748.2692 | actor=-51.3598 | alpha=0.1940
+  step=488,000 | critic=659.5798 | actor=-50.3509 | alpha=0.1532
+  step=489,000 | critic=565.3023 | actor=-49.7117 | alpha=0.1247
+  step=490,000 | critic=615.4173 | actor=-51.9036 | alpha=0.1421
+  ★ Val revenue (2000 steps): $+871.76
+  step=491,000 | critic=758.4259 | actor=-49.1538 | alpha=0.1656
+  step=492,000 | critic=557.8086 | actor=-51.1476 | alpha=0.1946
+  step=493,000 | critic=742.3463 | actor=-48.2397 | alpha=0.1496
+  step=494,000 | critic=690.8241 | actor=-47.9604 | alpha=0.1446
+  step=495,000 | critic=585.9058 | actor=-49.6424 | alpha=0.1650
+  step=496,000 | critic=405.0959 | actor=-45.7160 | alpha=0.1669
+  step=497,000 | critic=679.2404 | actor=-47.2543 | alpha=0.1484
+  step=498,000 | critic=524.8031 | actor=-46.1263 | alpha=0.1698
+  step=499,000 | critic=583.9636 | actor=-50.7495 | alpha=0.1230
+  step=500,000 | critic=495.1519 | actor=-52.7851 | alpha=0.0793
+  ★ Val revenue (2000 steps): $+1,467.23
+  [Saved] stage1_step500000.pt
+  [Saved] stage1_final.pt
+
+============================================================
+✓ Training complete.
+  Best val revenue : $+8,089.30
+  Logs saved       : ./logs/training_log.csv
+Next step:  python pipeline/p5_evaluate.py

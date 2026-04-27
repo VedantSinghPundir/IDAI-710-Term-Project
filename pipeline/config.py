@@ -1,3 +1,154 @@
+# """
+# config.py — Central Configuration for Stage 1
+# ================================================
+# Edit this file based on the output of p1_inspect_data.py.
+# All other pipelines import from here.
+
+# STEP 1: Run p1_inspect_data.py
+# STEP 2: Copy the column names it prints into this file
+# STEP 3: Run the remaining pipelines in order
+# """
+
+# import os
+# import torch
+
+# # ══════════════════════════════════════════════════════════
+# # PATHS
+# # ══════════════════════════════════════════════════════════
+# DATA_ROOT      = "./data/processed"
+# CHECKPOINT_DIR = "./checkpoints/stage1"
+# LOG_DIR        = "./logs"
+
+# # ══════════════════════════════════════════════════════════
+# # COLUMN NAMES  ← fill these in after running p1_inspect_data.py
+# # ══════════════════════════════════════════════════════════
+
+# # The 12 price columns fed into the TTFE.
+# # Order matters: [rt_lmp, rt_mcpc×5, dam_spp, dam_as×5]
+# # # PLACEHOLDER — replace with actual column names from your parquets:
+# # PRICE_COLS = [
+# #     "rt_lmp",           # RT energy price
+# #     "rt_reg_up",        # RT regulation up
+# #     "rt_reg_dn",        # RT regulation down
+# #     "rt_rrs",           # RT responsive reserve
+# #     "rt_ecrs",          # RT ERCOT contingency reserve
+# #     "rt_nonspin",       # RT non-spinning reserve
+# #     "dam_spp",          # DAM energy settlement price
+# #     "dam_reg_up",       # DAM regulation up
+# #     "dam_reg_dn",       # DAM regulation down
+# #     "dam_rrs",          # DAM responsive reserve
+# #     "dam_ecrs",         # DAM ERCOT contingency reserve
+# #     "dam_nonspin",      # DAM non-spinning reserve
+# # ]
+# # 9-dim price vector (NOT 12 — rt_mcpc cols are all null pre-RTC+B)
+# PRICE_COLS = [
+#     "rt_lmp",
+#     "dam_spp",
+#     "dam_as_regup",
+#     "dam_as_regdn",
+#     "dam_as_rrs",
+#     "dam_as_ecrs",
+#     "dam_as_nsrs",
+# ]
+
+# # The 7 system condition columns (NOT fed into TTFE — concatenated after)
+# # PLACEHOLDER — replace with actual column names:
+# # SYSTEM_COLS = [
+# #     "load_fcst",        # load forecast (MW)
+# #     "load_act",         # actual load (MW)
+# #     "wind_gen",         # wind generation (MW)
+# #     "solar_gen",        # solar generation (MW)
+# #     "ercot_ind1",       # ERCOT indicator 1
+# #     "ercot_ind2",       # ERCOT indicator 2
+# #     "ercot_ind3",       # ERCOT indicator 3
+# # ]
+# SYSTEM_COLS = [
+#     "total_load_mw",
+#     "load_forecast_mw",
+#     "wind_actual_mw",
+#     "wind_forecast_mw",
+#     "solar_actual_mw",
+#     "solar_forecast_mw",
+#     "net_load_mw",
+# ]
+# # Name of the timestamp column in the parquets (or "__index__" if it's the index)
+# TIMESTAMP_COL = "__index__"   # most likely; update if p1 says otherwise
+
+# # ══════════════════════════════════════════════════════════
+# # DATE SPLITS
+# # ══════════════════════════════════════════════════════════
+# STAGE1_START = "2020-01-01"
+# STAGE1_END   = "2025-12-04"    # last pre-RTC+B date (inclusive)
+# VAL_START    = "2025-10-01"    # hold-out for evaluation (2 months)
+
+# # ══════════════════════════════════════════════════════════
+# # BATTERY PHYSICAL PARAMETERS
+# # ══════════════════════════════════════════════════════════
+# BATTERY_CAP_MWH  = 100.0       # total energy capacity (MWh)
+# BATTERY_POWER_MW = 25.0        # max charge/discharge rate (MW)
+# EFFICIENCY       = 0.92        # round-trip efficiency (applied as √η per direction)
+# SOC_MIN          = 0.05        # min state-of-charge (fraction)
+# SOC_MAX          = 0.95        # max state-of-charge (fraction)
+# INTERVAL_H       = 5 / 60      # 5-minute intervals in hours
+
+# # ══════════════════════════════════════════════════════════
+# # MODEL ARCHITECTURE
+# # ══════════════════════════════════════════════════════════
+# # WINDOW_LEN   = 32              # timesteps in TTFE input
+# WINDOW_LEN  = 288 
+# # PRICE_DIM    = len(PRICE_COLS) # = 12
+# PRICE_DIM = len(PRICE_COLS)
+# SYSTEM_DIM   = len(SYSTEM_COLS)# = 7
+# TIME_DIM     = 6               # sin/cos time features
+# SOC_DIM      = 1
+# TTFE_DIM     = 64              # TTFE output dimension
+# OBS_DIM      = TTFE_DIM + SYSTEM_DIM + TIME_DIM + SOC_DIM  # = 78
+
+# TTFE_NHEAD      = 4
+# TTFE_NLAYERS    = 2
+# TTFE_DROPOUT    = 0.1
+# HIDDEN_DIM      = 256          # SAC actor/critic hidden size
+# CLIP_SIGMA      = 5.0          # ±5σ clip in normalisation (handles spikes)
+
+# # ══════════════════════════════════════════════════════════
+# # SAC TRAINING HYPERPARAMETERS
+# # ══════════════════════════════════════════════════════════
+# REPLAY_SIZE     = 1_000_000
+# BATCH_SIZE      = 256
+# LR_ACTOR        = 3e-4
+# LR_CRITIC       = 3e-4
+# LR_ALPHA        = 3e-4
+# GAMMA           = 0.99
+# TAU             = 0.005
+# TARGET_ENTROPY  = -0.5         # for 1-dim action (energy only)
+# # TARGET_ENTROPY = -0.1 #Fix: lower TARGET_ENTROPY to -0.1 to stop alpha explosion
+# WARMUP_STEPS    = 5_000        # random exploration before gradient updates
+# # TOTAL_STEPS     = 500_000
+# TOTAL_STEPS = 50000
+# LOG_EVERY       = 1_000
+# SAVE_EVERY      = 50_000
+# EVAL_EVERY      = 10_000
+# REWARD_SCALE    = 100.0        # fixed reward divisor (÷100 keeps Q-values stable)
+# MAX_EP_STEPS    = 288          # one trading day = 288 five-minute intervals
+# # ══════════════════════════════════════════════════════════
+# # DEVICE
+# # ══════════════════════════════════════════════════════════
+# DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# # ══════════════════════════════════════════════════════════
+# # SANITY CHECK
+# # ══════════════════════════════════════════════════════════
+# # assert len(PRICE_COLS)  == 12, f"Need exactly 12 price cols, got {len(PRICE_COLS)}"
+# assert len(PRICE_COLS) == PRICE_DIM
+# assert len(SYSTEM_COLS) == 7,  f"Need exactly 7 system cols, got {len(SYSTEM_COLS)}"
+# assert OBS_DIM == 78,          f"OBS_DIM should be 78, got {OBS_DIM}"
+
+# if __name__ == "__main__":
+#     print("Config loaded successfully.")
+#     print(f"  PRICE_COLS  ({PRICE_DIM}): {PRICE_COLS}")
+#     print(f"  SYSTEM_COLS ({SYSTEM_DIM}): {SYSTEM_COLS}")
+#     print(f"  OBS_DIM     : {OBS_DIM}")
+#     print(f"  DEVICE      : {DEVICE}")
 """
 config.py — Central Configuration for Stage 1
 ================================================
@@ -7,6 +158,12 @@ All other pipelines import from here.
 STEP 1: Run p1_inspect_data.py
 STEP 2: Copy the column names it prints into this file
 STEP 3: Run the remaining pipelines in order
+
+IMPORTANT — BEFORE RUNNING p4_train.py:
+  If STAGE1_START has changed (now 2022-01-01), you MUST rerun
+  p2_build_dataset.py to recompute normaliser_stats.npz from the
+  new date range. Using old stats from 2020-2025 on 2022-2025 data
+  will produce incorrect z-score normalisation.
 """
 
 import os
@@ -20,27 +177,10 @@ CHECKPOINT_DIR = "./checkpoints/stage1"
 LOG_DIR        = "./logs"
 
 # ══════════════════════════════════════════════════════════
-# COLUMN NAMES  ← fill these in after running p1_inspect_data.py
+# COLUMN NAMES
 # ══════════════════════════════════════════════════════════
 
-# The 12 price columns fed into the TTFE.
-# Order matters: [rt_lmp, rt_mcpc×5, dam_spp, dam_as×5]
-# # PLACEHOLDER — replace with actual column names from your parquets:
-# PRICE_COLS = [
-#     "rt_lmp",           # RT energy price
-#     "rt_reg_up",        # RT regulation up
-#     "rt_reg_dn",        # RT regulation down
-#     "rt_rrs",           # RT responsive reserve
-#     "rt_ecrs",          # RT ERCOT contingency reserve
-#     "rt_nonspin",       # RT non-spinning reserve
-#     "dam_spp",          # DAM energy settlement price
-#     "dam_reg_up",       # DAM regulation up
-#     "dam_reg_dn",       # DAM regulation down
-#     "dam_rrs",          # DAM responsive reserve
-#     "dam_ecrs",         # DAM ERCOT contingency reserve
-#     "dam_nonspin",      # DAM non-spinning reserve
-# ]
-# 9-dim price vector (NOT 12 — rt_mcpc cols are all null pre-RTC+B)
+# 7-dim price vector (NOT 12 — rt_mcpc cols are all null pre-RTC+B)
 PRICE_COLS = [
     "rt_lmp",
     "dam_spp",
@@ -51,17 +191,7 @@ PRICE_COLS = [
     "dam_as_nsrs",
 ]
 
-# The 7 system condition columns (NOT fed into TTFE — concatenated after)
-# PLACEHOLDER — replace with actual column names:
-# SYSTEM_COLS = [
-#     "load_fcst",        # load forecast (MW)
-#     "load_act",         # actual load (MW)
-#     "wind_gen",         # wind generation (MW)
-#     "solar_gen",        # solar generation (MW)
-#     "ercot_ind1",       # ERCOT indicator 1
-#     "ercot_ind2",       # ERCOT indicator 2
-#     "ercot_ind3",       # ERCOT indicator 3
-# ]
+# 7 system condition columns (concatenated after TTFE, not fed into it)
 SYSTEM_COLS = [
     "total_load_mw",
     "load_forecast_mw",
@@ -71,65 +201,123 @@ SYSTEM_COLS = [
     "solar_forecast_mw",
     "net_load_mw",
 ]
-# Name of the timestamp column in the parquets (or "__index__" if it's the index)
-TIMESTAMP_COL = "__index__"   # most likely; update if p1 says otherwise
+
+TIMESTAMP_COL = "__index__"
 
 # ══════════════════════════════════════════════════════════
 # DATE SPLITS
 # ══════════════════════════════════════════════════════════
-STAGE1_START = "2020-01-01"
-STAGE1_END   = "2025-12-04"    # last pre-RTC+B date (inclusive)
-VAL_START    = "2025-10-01"    # hold-out for evaluation (2 months)
+# Changed from 2020-01-01 to 2022-01-01 to:
+#   - Exclude 2021 Winter Storm Uri outlier (kurtosis 786 → 631)
+#   - Use more stationary market regime (year-to-year std variation 12x → 3x)
+#   - NOTE: kurtosis is still ~631 — cannot be eliminated by data selection
+#     Huber loss and improved training are STILL necessary
+STAGE1_START = "2022-01-01"
+STAGE1_END   = "2025-12-04"
+VAL_START    = "2025-10-01"
 
 # ══════════════════════════════════════════════════════════
 # BATTERY PHYSICAL PARAMETERS
 # ══════════════════════════════════════════════════════════
-BATTERY_CAP_MWH  = 100.0       # total energy capacity (MWh)
-BATTERY_POWER_MW = 25.0        # max charge/discharge rate (MW)
-EFFICIENCY       = 0.92        # round-trip efficiency (applied as √η per direction)
-SOC_MIN          = 0.05        # min state-of-charge (fraction)
-SOC_MAX          = 0.95        # max state-of-charge (fraction)
-INTERVAL_H       = 5 / 60      # 5-minute intervals in hours
+BATTERY_CAP_MWH  = 100.0
+BATTERY_POWER_MW = 25.0
+EFFICIENCY       = 0.92
+SOC_MIN          = 0.05
+SOC_MAX          = 0.95
+INTERVAL_H       = 5 / 60
 
 # ══════════════════════════════════════════════════════════
 # MODEL ARCHITECTURE
 # ══════════════════════════════════════════════════════════
-# WINDOW_LEN   = 32              # timesteps in TTFE input
-WINDOW_LEN  = 288 
-# PRICE_DIM    = len(PRICE_COLS) # = 12
-PRICE_DIM = len(PRICE_COLS)
-SYSTEM_DIM   = len(SYSTEM_COLS)# = 7
-TIME_DIM     = 6               # sin/cos time features
+# WINDOW_LEN=288 was tested and failed (5x worse, critic 4x less stable).
+# Root cause unclear (TTFE gradient scaling or demo coverage).
+# Keeping at 32 until root cause is understood.
+WINDOW_LEN   = 32
+PRICE_DIM    = len(PRICE_COLS)   # = 7
+SYSTEM_DIM   = len(SYSTEM_COLS)  # = 7
+TIME_DIM     = 6
 SOC_DIM      = 1
-TTFE_DIM     = 64              # TTFE output dimension
+TTFE_DIM     = 64
 OBS_DIM      = TTFE_DIM + SYSTEM_DIM + TIME_DIM + SOC_DIM  # = 78
 
 TTFE_NHEAD      = 4
 TTFE_NLAYERS    = 2
 TTFE_DROPOUT    = 0.1
-HIDDEN_DIM      = 256          # SAC actor/critic hidden size
-CLIP_SIGMA      = 5.0          # ±5σ clip in normalisation (handles spikes)
+HIDDEN_DIM      = 256
+CLIP_SIGMA      = 5.0
 
 # ══════════════════════════════════════════════════════════
 # SAC TRAINING HYPERPARAMETERS
 # ══════════════════════════════════════════════════════════
-REPLAY_SIZE     = 1_000_000
-BATCH_SIZE      = 256
-LR_ACTOR        = 3e-4
-LR_CRITIC       = 3e-4
-LR_ALPHA        = 3e-4
-GAMMA           = 0.99
-TAU             = 0.005
-TARGET_ENTROPY  = -0.5         # for 1-dim action (energy only)
-# TARGET_ENTROPY = -0.1 #Fix: lower TARGET_ENTROPY to -0.1 to stop alpha explosion
-WARMUP_STEPS    = 5_000        # random exploration before gradient updates
-# TOTAL_STEPS     = 500_000
-TOTAL_STEPS = 50000
-LOG_EVERY       = 1_000
-SAVE_EVERY      = 50_000
-EVAL_EVERY      = 10_000
-REWARD_SCALE    = 100.0        # fixed reward divisor (÷100 keeps Q-values stable)
-MAX_EP_STEPS    = 288          # one trading day = 288 five-minute intervals
+
+# --- Replay buffers (two separate buffers) ---
+DEMO_BUFFER_SIZE  = 100_000      # demo transitions only
+AGENT_BUFFER_SIZE = 1_000_000    # agent-generated transitions
+
+# --- Demonstration settings ---
+DEMO_STEPS        = 50_000       # rule-based demo transitions to collect
+                                  # 50k ÷ 288 steps/episode ≈ 173 diverse episodes
+                                  # (vs 34 previously with 10k — 5x more coverage)
+DEMO_FLOOR        = 0.05         # minimum demo sampling ratio — NEVER goes to 0
+                                  # keeps charge/discharge diversity throughout training
+DEMO_DECAY_STEPS  = 200_000      # steps over which demo ratio decays from 1.0 to DEMO_FLOOR
+                                  # longer decay than before (was 50k) because policy
+                                  # collapsed within 10-20k steps in previous run
+
+# --- Critic stability (key fixes for kurtosis 786 problem) ---
+HUBER_DELTA       = 10.0         # Huber loss threshold
+                                  # Errors < 10 → quadratic (normal intervals)
+                                  # Errors > 10 → linear (spike intervals capped)
+                                  # Reduces spike gradient dominance from 40,580x to ~15x
+                                  # Placement: Q-target mean=6.93, max=77.26 → delta=10 is correct
+
+# --- Learning rates ---
+LR_ACTOR          = 3e-4
+LR_CRITIC         = 1e-4         # Lowered from 3e-4 — training log showed critic
+                                  # climbing steadily before explosion; slower updates
+                                  # give target network time to stabilise
+LR_ALPHA          = 3e-4
+
+# --- Gradient clipping ---
+GRAD_CLIP         = 0.5          # Tightened from 1.0 — prevents large gradient
+                                  # updates during spike transitions
+
+# --- SAC core ---
+BATCH_SIZE        = 256
+GAMMA             = 0.99
+TAU               = 0.005
+TARGET_ENTROPY    = -0.5         # for 1-dim action space
+
+# --- Episode and training length ---
+MAX_EP_STEPS      = 288          # one trading day
+TOTAL_STEPS       = 500_000
+
+# --- Logging and saving ---
+LOG_EVERY         = 1_000
+SAVE_EVERY        = 50_000
+EVAL_EVERY        = 10_000
+
+# --- Reward scaling ---
+REWARD_SCALE      = 100.0        # fixed — proven correct range [-4.5, +188]
+
+# ══════════════════════════════════════════════════════════
+# EARLY STOPPING AND HEALTH CRITERIA
+# ══════════════════════════════════════════════════════════
+# Based on diagnostics from Stage 1 Plan A training:
+#   - Critic exploded at step 380k (loss went from ~50 to ~1000)
+#   - Policy collapsed (log_pi = +0.97, should be in [-2, 0])
+# These thresholds trigger automatic stopping before wasting compute.
+
+CRITIC_LOSS_STOP      = 300      # stop if 100-step MA of critic loss > 300
+                                  # (training log: critic was ~50 healthy, ~1000 exploded)
+LOG_PI_STOP           = 0.0      # stop if 100-step MA of log_pi > 0.0
+                                  # log_pi > 0 is theoretically impossible for healthy policy
+                                  # (measured +0.97 in collapsed policy)
+MIN_STEP_BEFORE_STOP  = 50_000   # don't trigger early stop before this step
+                                  # (early training can be temporarily noisy)
+CHARGE_FRAC_MIN       = 0.05     # warn if charge fraction < 5% over last 1000 steps
+                                  # (indicates always-discharge collapse)
+
 # ══════════════════════════════════════════════════════════
 # DEVICE
 # ══════════════════════════════════════════════════════════
@@ -138,14 +326,26 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # ══════════════════════════════════════════════════════════
 # SANITY CHECK
 # ══════════════════════════════════════════════════════════
-# assert len(PRICE_COLS)  == 12, f"Need exactly 12 price cols, got {len(PRICE_COLS)}"
-assert len(PRICE_COLS) == PRICE_DIM
-assert len(SYSTEM_COLS) == 7,  f"Need exactly 7 system cols, got {len(SYSTEM_COLS)}"
-assert OBS_DIM == 78,          f"OBS_DIM should be 78, got {OBS_DIM}"
+assert len(PRICE_COLS)  == PRICE_DIM
+assert len(SYSTEM_COLS) == 7,  f"Need 7 system cols, got {len(SYSTEM_COLS)}"
+assert OBS_DIM          == 78, f"OBS_DIM should be 78, got {OBS_DIM}"
+assert WINDOW_LEN       == 32, f"WINDOW_LEN should be 32, got {WINDOW_LEN}"
+assert DEMO_FLOOR       >  0,  "DEMO_FLOOR must be > 0 — never let demo ratio reach 0"
+assert HUBER_DELTA      >  0,  "HUBER_DELTA must be positive"
 
 if __name__ == "__main__":
     print("Config loaded successfully.")
+    print(f"  STAGE1_START: {STAGE1_START}  ← excludes 2021 Winter Storm Uri")
     print(f"  PRICE_COLS  ({PRICE_DIM}): {PRICE_COLS}")
     print(f"  SYSTEM_COLS ({SYSTEM_DIM}): {SYSTEM_COLS}")
     print(f"  OBS_DIM     : {OBS_DIM}")
+    print(f"  WINDOW_LEN  : {WINDOW_LEN}")
     print(f"  DEVICE      : {DEVICE}")
+    print(f"  LR_CRITIC   : {LR_CRITIC}  (lowered from 3e-4)")
+    print(f"  GRAD_CLIP   : {GRAD_CLIP}  (tightened from 1.0)")
+    print(f"  HUBER_DELTA : {HUBER_DELTA}")
+    print(f"  DEMO_STEPS  : {DEMO_STEPS:,}")
+    print(f"  DEMO_FLOOR  : {DEMO_FLOOR}  (never decays to 0)")
+    print()
+    print("  REMINDER: Rerun p2_build_dataset.py before training!")
+    print("  (normaliser_stats.npz must be recomputed for 2022-2025 data)")

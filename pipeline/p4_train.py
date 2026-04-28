@@ -3907,12 +3907,12 @@ class ERCOTEnv:
 
     def step(self, action: float, new_soc: float) -> Tuple:
         """
-        CRITICAL: action must be the FEASIBLE projected action.
-        Do NOT pass raw actor output — energy calculation uses action directly.
+        # CRITICAL: action must be the FEASIBLE projected action.
+        # Do NOT pass raw actor output — energy calculation uses action directly.
 
-        Returns: (next_obs, shaped_reward, done, cash_reward)
-            shaped_reward: used for training (inventory-adjusted)
-            cash_reward:   real market cash (for evaluation display only)
+        # Returns: (next_obs, shaped_reward, done, cash_reward)
+        #     shaped_reward: used for training (inventory-adjusted)
+        #     cash_reward:   real market cash (for evaluation display only)
         """
         rt_lmp = self.ds.get_rt_lmp(self.idx)
 

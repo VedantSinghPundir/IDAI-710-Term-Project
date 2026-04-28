@@ -4008,7 +4008,7 @@ def flatten_obs(pw, sv, tf, soc) -> np.ndarray:
 
 
 def unflatten_obs(flat: torch.Tensor) -> Tuple:
-    """Split flat buffer obs → (price_window, system_vars, time_feats, soc)."""
+    # """Split flat buffer obs → (price_window, system_vars, time_feats, soc)."""
     pw_dim = WINDOW_LEN * PRICE_DIM
     splits = torch.split(flat, [pw_dim, SYSTEM_DIM, TIME_DIM, SOC_DIM], dim=1)
     pw     = splits[0].view(flat.shape[0], WINDOW_LEN, PRICE_DIM)

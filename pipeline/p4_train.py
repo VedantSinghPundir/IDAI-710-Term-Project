@@ -3967,12 +3967,12 @@ class ReplayBuffer:
 
 def get_demo_ratio(step: int) -> float:
     """
-    Linearly decay demo sampling ratio from 1.0 to DEMO_FLOOR.
-    Never reaches 0 — floor maintained throughout training.
+    # Linearly decay demo sampling ratio from 1.0 to DEMO_FLOOR.
+    # Never reaches 0 — floor maintained throughout training.
 
-    Rationale: without the floor, policy collapsed within 10-20k steps in
-    previous runs. Once collapsed, agent_buffer filled with always-discharge
-    transitions. Keeping 5% demos ensures critic always sees both actions.
+    # Rationale: without the floor, policy collapsed within 10-20k steps in
+    # previous runs. Once collapsed, agent_buffer filled with always-discharge
+    # transitions. Keeping 5% demos ensures critic always sees both actions.
     """
     ratio = 1.0 - (step / DEMO_DECAY_STEPS) * (1.0 - DEMO_FLOOR)
     return max(DEMO_FLOOR, ratio)

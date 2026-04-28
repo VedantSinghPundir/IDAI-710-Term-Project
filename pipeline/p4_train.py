@@ -3852,7 +3852,7 @@ class ERCOTEnv:
         -1 = full discharge (sell to grid, SoC decreases)
          0 = hold
 
-    Reward (Plan C — inventory-adjusted):
+    # Reward (Plan C — inventory-adjusted):
         grid_mwh = -action * BATTERY_POWER_MW * INTERVAL_H
                    positive = selling (discharge), negative = buying (charge)
 
